@@ -37,6 +37,13 @@
       --border-cleanair: rgba(255, 255, 255, 0.04);
       --accent-cleanair: #ff453a;
       --accent-cleanair-glow: rgba(255, 69, 58, 0.35);
+
+      --bg-base-smarthealth: #05080f;
+      --bg-sidebar-smarthealth: rgba(6, 12, 22, 0.88);
+      --bg-surface-smarthealth: rgba(10, 20, 36, 0.45);
+      --border-smarthealth: rgba(255, 255, 255, 0.05);
+      --accent-smarthealth: #00b4d8;
+      --accent-smarthealth-glow: rgba(0, 180, 216, 0.35);
       
       --color-blue: #0071e3;
       --color-blue-glow: rgba(0, 113, 227, 0.2);
@@ -1507,6 +1514,11 @@
       box-shadow: 0 10px 30px rgba(255, 69, 58, 0.2);
     }
 
+    .toast.smarthealth-toast {
+      border: 1px solid var(--accent-smarthealth);
+      box-shadow: 0 10px 30px rgba(0, 180, 216, 0.2);
+    }
+
     .toast-icon {
       width: 28px;
       height: 28px;
@@ -1519,6 +1531,11 @@
     .priorities-toast .toast-icon {
       background: rgba(0, 113, 227, 0.15);
       color: var(--color-blue);
+    }
+
+    .smarthealth-toast .toast-icon {
+      background: rgba(0, 180, 216, 0.15);
+      color: var(--accent-smarthealth);
     }
 
     .cleanair-toast .toast-icon {
@@ -1536,6 +1553,142 @@
       font-size: 10px;
       color: #94a3b8;
       margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       SMART HEALTH SPECIFIC LAYOUT COMPONENTS
+       ========================================================================== */
+    .occupancy-meter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .occupancy-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+    }
+    .occupancy-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .occupancy-info h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .occupancy-progress {
+      width: 100px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .occupancy-fill {
+      height: 100%;
+      background: var(--accent-smarthealth);
+      border-radius: 10px;
+    }
+    .occupancy-pct {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stock-countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .stock-countdown-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .stock-countdown-card:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--accent-smarthealth);
+    }
+    .stock-countdown-card.low {
+      border-color: rgba(255, 69, 58, 0.2);
+      background: rgba(255, 69, 58, 0.02);
+    }
+    .stock-countdown-card.low:hover {
+      border-color: var(--color-red);
+    }
+    .stock-countdown-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .stock-countdown-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .facility-node {
+      fill: var(--marker-color, var(--color-green));
+      cursor: pointer;
+      transition: transform 0.2s ease, fill 0.2s ease;
+    }
+    .facility-node:hover {
+      transform: scale(1.3);
+      fill: #ffffff;
+    }
+    .health-map-path {
+      fill: rgba(0, 180, 216, 0.05);
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 1.5;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .health-map-path:hover {
+      fill: rgba(0, 180, 216, 0.15);
+      stroke: var(--accent-smarthealth);
+    }
+    .health-map-path.active-filter {
+      stroke: var(--accent-smarthealth);
+      fill: rgba(0, 180, 216, 0.25) !important;
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 12px var(--accent-smarthealth-glow));
+    }
+    .health-map-path.status-critical {
+      fill: rgba(255, 69, 58, 0.12);
+      stroke: rgba(255, 69, 58, 0.3);
+    }
+    .health-map-path.status-critical:hover {
+      fill: rgba(255, 69, 58, 0.25);
+      stroke: var(--color-red);
+    }
+
+    #dashboard-smarthealth-wrapper .nav-item.active {
+      background: rgba(0, 180, 216, 0.12);
+      border: 1px solid rgba(0, 180, 216, 0.22);
+      color: #fff;
+    }
+    #dashboard-smarthealth-wrapper .nav-item.active i {
+      color: var(--accent-smarthealth);
+    }
+    #dashboard-smarthealth-wrapper .ranking-table tr.selected td {
+      background: rgba(0, 180, 216, 0.05);
+      color: #fff;
+    }
+    #dashboard-smarthealth-wrapper .ranking-table tr.selected {
+      border-left: 3px solid var(--accent-smarthealth);
     }
 
     /* Print Styles */
@@ -2294,6 +2447,390 @@
     </main>
   </div>
 
+
+  <!-- ==========================================================================
+       DASHBOARD 3: SMART HEALTH (HOSPITAL SUPPLY CHAIN CONTROL)
+       ========================================================================== -->
+  <div id="dashboard-smarthealth-wrapper" class="dashboard-layout" style="display: none;">
+    
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="logo-container">
+        <div class="logo-badge" style="background: linear-gradient(135deg, var(--accent-smarthealth), #005f73);">
+          <i data-lucide="heart-pulse" style="color: #ffffff; width: 20px; height: 20px;"></i>
+        </div>
+        <div class="logo-text">
+          <h2>Health Central</h2>
+          <p>Supply & Bed Control</p>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <div class="nav-group">
+        <span class="nav-label">MONITORING</span>
+        <button class="nav-item active">
+          <i data-lucide="activity"></i> <span>Overview Console</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="users"></i> <span>Patient Footfall</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="hotel"></i> <span>Bed Occupancy</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="pill"></i> <span>Medicine Stock</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="user-check"></i> <span>Doctor Attendance</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="map-pin"></i> <span>District View</span>
+        </button>
+      </div>
+
+      <!-- Filters Panel -->
+      <div class="filters-section">
+        <span class="nav-label">COMMAND LIMITS</span>
+        
+        <!-- Block Filter -->
+        <div class="filter-item">
+          <label for="filter-health-block">Block / Area</label>
+          <select id="filter-health-block" class="filter-select" onchange="applySmartHealthFilters()">
+            <option value="All">All Blocks</option>
+            <option value="Block-A">Block-A Sector</option>
+            <option value="West Housing">West Housing Suburbs</option>
+            <option value="East Suburbs">East Suburbs Residential</option>
+            <option value="Bypass Industrial">Bypass Industrial Corridor</option>
+          </select>
+        </div>
+
+        <!-- Facility Type Filter -->
+        <div class="filter-item">
+          <label for="filter-health-type">Facility Type</label>
+          <select id="filter-health-type" class="filter-select" onchange="applySmartHealthFilters()">
+            <option value="All">All Types</option>
+            <option value="CHC">Community Health (CHC)</option>
+            <option value="PHC">Primary Health (PHC)</option>
+          </select>
+        </div>
+
+        <!-- Supply Status Filter -->
+        <div class="filter-item">
+          <label for="filter-health-urgency">Supply Status</label>
+          <select id="filter-health-urgency" class="filter-select" onchange="applySmartHealthFilters()">
+            <option value="All">All Statuses</option>
+            <option value="Critical">Critical Stockout</option>
+            <option value="Alert">Alert Conditions</option>
+            <option value="Normal">Normal Inventory</option>
+          </select>
+        </div>
+
+        <button class="btn-export" onclick="resetSmartHealthFilters()" style="margin-top: 10px; justify-content: center;">
+          <i data-lucide="refresh-cw"></i> <span>Reset Console</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Workspace contents -->
+    <main class="workspace">
+      
+      <!-- Top header -->
+      <header class="header">
+        <div class="search-bar-container">
+          <i data-lucide="search"></i>
+          <input type="text" id="search-bar-smarthealth" class="search-input" placeholder="Search medical center..." oninput="applySmartHealthFilters()">
+        </div>
+
+        <div class="header-actions">
+          
+          <!-- Explicit Dashboard Switcher Button -->
+          <button class="switcher-badge" onclick="toggleDashboard()">
+            <i data-lucide="repeat"></i> Priorities Dashboard <span>Ctrl + `</span>
+          </button>
+
+          <div class="filter-item" style="flex-direction: row; align-items: center; gap: 8px;">
+            <i data-lucide="calendar" style="width: 16px; height: 16px; color: #575e75;"></i>
+            <select id="filter-time-smarthealth" class="filter-select" onchange="applySmartHealthFilters()" style="padding: 6px 28px 6px 12px; width: 130px;">
+              <option value="live">Live Telemetry</option>
+              <option value="24">Last 24 Hours</option>
+              <option value="7">Last 7 Days</option>
+            </select>
+          </div>
+
+          <button class="action-btn" style="color: var(--accent-smarthealth); border-color: rgba(0,180,216,0.25); background: rgba(0,180,216,0.05);">
+            <i data-lucide="bell"></i>
+            <span class="btn-badge"></span>
+          </button>
+
+          <div class="profile-card">
+            <div class="avatar" style="border-color: rgba(0,180,216,0.25);">MO</div>
+            <div class="profile-info">
+              <h4>Dr. A. Sen</h4>
+              <p>District Health Officer</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main view cards -->
+      <div class="main-content">
+        
+        <!-- KPIs -->
+        <section class="kpi-grid">
+          <div class="glass-card kpi-card" style="border-color: rgba(0, 180, 216, 0.25);">
+            <span class="kpi-label">Today's Patients</span>
+            <div class="kpi-value" id="health-kpi-footfall" style="color: var(--accent-smarthealth);">0</div>
+            <div class="kpi-trend trend-up">
+              <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+              <span>+8.2% vs yesterday</span>
+            </div>
+            <i data-lucide="users" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Beds Available</span>
+            <div class="kpi-value" id="health-kpi-beds" style="color: var(--color-green);">0</div>
+            <div class="kpi-trend" style="color: var(--color-green);">
+              <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+              <span>Ready for admissions</span>
+            </div>
+            <i data-lucide="hotel" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Critical Stockouts</span>
+            <div class="kpi-value" id="health-kpi-stockouts" style="color: var(--color-red);">0</div>
+            <div class="kpi-trend trend-down" style="color: var(--color-red);">
+              <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i>
+              <span>Requires refills</span>
+            </div>
+            <i data-lucide="pill" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Doctors Present</span>
+            <div class="kpi-value" id="health-kpi-doctors">0</div>
+            <div class="kpi-trend trend-up" style="color: var(--color-green);">
+              <i data-lucide="user-check" style="width: 12px; height: 12px;"></i>
+              <span>91% Attendance</span>
+            </div>
+            <i data-lucide="heart" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Active Alerts</span>
+            <div class="kpi-value" id="health-kpi-alerts" style="color: var(--color-orange);">0</div>
+            <div class="kpi-trend" style="color: var(--color-orange);">
+              <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
+              <span>Monitored items</span>
+            </div>
+            <i data-lucide="shield-alert" class="kpi-icon"></i>
+          </div>
+        </section>
+
+        <!-- GIS Health Map & Patient Trend Line -->
+        <div class="grid-gis-charts">
+          <div class="glass-card heatmap-card" style="border-color: rgba(0,180,216,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="map" style="color: var(--accent-smarthealth);"></i> District Health Summary Map</h3>
+                <div class="card-subheader">Interlocking block health status monitor. Click zones to isolate facilities.</div>
+              </div>
+            </div>
+            
+            <div class="map-wrapper">
+              <svg viewBox="0 0 500 350" class="satellite-svg-grid">
+                <!-- Outer lines representing blocks boundaries -->
+                <polygon points="250,110 320,150 430,90 390,15 250,15" class="health-map-path" data-block="West Housing" />
+                <polygon points="320,150 320,230 430,280 470,180 430,90" class="health-map-path" data-block="East Suburbs" />
+                <polygon points="250,270 180,230 80,280 180,315 310,315 430,280" class="health-map-path" data-block="Bypass Industrial" />
+                <polygon points="250,110 320,150 320,230 250,270 180,230 180,150" class="health-map-path" data-block="Block-A" />
+                
+                <!-- Facility Markers inside blocks -->
+                <!-- Block-A CHC (Large Red) -->
+                <circle cx="250" cy="180" r="22" class="pulse-ring" style="--marker-color: var(--color-red);" />
+                <circle cx="250" cy="180" r="7" class="facility-node" style="--marker-color: var(--color-red);" onclick="filterHealthMap('Block-A')" />
+
+                <!-- District Hospital in West Housing (Green) -->
+                <circle cx="340" cy="80" r="14" class="pulse-ring" style="--marker-color: var(--color-green);" />
+                <circle cx="340" cy="80" r="5" class="facility-node" style="--marker-color: var(--color-green);" onclick="filterHealthMap('West Housing')" />
+
+                <!-- Bypass Road Trauma (Yellow) -->
+                <circle cx="260" cy="290" r="18" class="pulse-ring" style="--marker-color: var(--color-orange);" />
+                <circle cx="260" cy="290" r="6" class="facility-node" style="--marker-color: var(--color-orange);" onclick="filterHealthMap('Bypass Industrial')" />
+
+                <!-- East Suburbs PHC (Green) -->
+                <circle cx="380" cy="200" r="12" class="pulse-ring" style="--marker-color: var(--color-green);" />
+                <circle cx="380" cy="200" r="5" class="facility-node" style="--marker-color: var(--color-green);" onclick="filterHealthMap('East Suburbs')" />
+
+                <!-- Labels -->
+                <text x="250" y="210" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">BLOCK-A CHC</text>
+                <text x="340" y="105" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">DISTRICT GEN</text>
+                <text x="260" y="315" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">TRAUMA BYP</text>
+                <text x="380" y="220" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">EAST PHC</text>
+              </svg>
+              
+              <div class="map-tooltip" id="health-map-tooltip">
+                <h5 id="health-tooltip-title">Block Name</h5>
+                <p>Total Footfall: <span class="value" id="health-tooltip-footfall">0</span></p>
+                <p>Status: <span class="value" id="health-tooltip-status">Normal</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="trending-up" style="color: var(--accent-smarthealth);"></i> Patient Load Forecast</h3>
+                <div class="card-subheader">Historical footfalls vs AI-predicted arrival spikes</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="healthTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Occupancy Meter & Stock countdowns -->
+        <div class="grid-interventions-clustering">
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="hotel" style="color: var(--accent-smarthealth);"></i> Bed Occupancy Meter</h3>
+                <div class="card-subheader">Real-time status of available beds categorized by care levels</div>
+              </div>
+            </div>
+            <div class="occupancy-meter-container" style="margin-top: 15px;">
+              <div class="occupancy-row">
+                <div class="occupancy-info">
+                  <i data-lucide="bed" style="color: var(--accent-smarthealth); width: 16px;"></i>
+                  <h5>General Ward Beds</h5>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="occupancy-progress">
+                    <div class="occupancy-fill" style="width: 86%;"></div>
+                  </div>
+                  <span class="occupancy-pct">86%</span>
+                </div>
+              </div>
+              <div class="occupancy-row">
+                <div class="occupancy-info">
+                  <i data-lucide="activity" style="color: var(--color-red); width: 16px;"></i>
+                  <h5>ICU Beds</h5>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="occupancy-progress">
+                    <div class="occupancy-fill" style="width: 93.8%; background: var(--color-red);"></div>
+                  </div>
+                  <span class="occupancy-pct" style="color: var(--color-red)">94%</span>
+                </div>
+              </div>
+              <div class="occupancy-row">
+                <div class="occupancy-info">
+                  <i data-lucide="heart-pulse" style="color: var(--color-orange); width: 16px;"></i>
+                  <h5>Emergency Beds</h5>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="occupancy-progress">
+                    <div class="occupancy-fill" style="width: 77.7%; background: var(--color-orange);"></div>
+                  </div>
+                  <span class="occupancy-pct" style="color: var(--color-orange)">78%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="calendar" style="color: var(--accent-smarthealth);"></i> Supply Stock Out Countdowns</h3>
+                <div class="card-subheader">Urgent depletion alerts. Estimated days remaining based on usage rate</div>
+              </div>
+            </div>
+            <div class="stock-countdown-grid" id="health-stock-grid"></div>
+          </div>
+        </div>
+
+        <!-- Doctor Attendance & Supply Recommendations -->
+        <div class="grid-insights-gap">
+          <div class="glass-card gap-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="pie-chart" style="color: var(--accent-smarthealth);"></i> Stock Level Forecasts</h3>
+                <div class="card-subheader">Predicted medical supplies stock levels vs replenishment schedule</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="healthSourceChart"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-card ai-card" style="border-color: rgba(0,180,216,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="truck" style="color: var(--accent-smarthealth);"></i> AI Supply Chain Recommendation</h3>
+                <div class="card-subheader">Automated redistribution workflows to prevent regional stockouts</div>
+              </div>
+            </div>
+            <div class="operations-container">
+              <div class="op-list" id="health-attendance-list"></div>
+              <div class="op-dispatch-box" id="health-dispatch-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Facility Comparison Table -->
+        <div class="glass-card table-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="list-ordered" style="color: var(--accent-smarthealth);"></i> Regional Facility Operations Index</h3>
+              <div class="card-subheader">Underperforming center and risk profiles ranked by resource stability</div>
+            </div>
+            <div class="table-actions">
+              <button class="btn-export" onclick="exportHealthCSV()"><i data-lucide="download"></i> Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th onclick="sortHealthTable('name')">Center Name <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortHealthTable('footfall')">Today's Footfall <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortHealthTable('bedsAvailable')">Beds Available <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortHealthTable('stockoutsCount')">Stockouts <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortHealthTable('doctorsPresent')">Staff Present <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortHealthTable('riskScore')">Risk Index <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                </tr>
+              </thead>
+              <tbody id="health-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Critical Alerts List -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="alert-triangle" style="color: var(--color-red);"></i> Critical Supply & Occupancy Alerts</h3>
+              <div class="card-subheader">Escalated warnings requiring emergency administrative approval</div>
+            </div>
+          </div>
+          <div class="cluster-list" id="health-alerts-list" style="margin-top: 15px;"></div>
+        </div>
+
+      </div>
+
+      <!-- Footer Info -->
+      <footer style="padding: 24px 40px; border-top: 1px solid var(--border-smarthealth); text-align: center; font-size: 11px; color: #575e75;">
+        District Health Control Console &bull; Ministry of Health &bull; &copy; 2026 Government of India
+      </footer>
+
+    </main>
+  </div>
+
   <!-- Toast Notification element -->
   <div class="toast priorities-toast" id="toast">
     <div class="toast-icon">
@@ -2425,6 +2962,14 @@
     let cleanairTrendChart = null;
     let cleanairSourceChart = null;
 
+    // Smart Health variables
+    let smartHealthFilteredData = [];
+    let selectedSmartHealthId = 301;
+    let smartHealthSortCol = "riskScore";
+    let smartHealthSortDir = "desc";
+    let smarthealthFootfallChart = null;
+    let smarthealthForecastChart = null;
+
 
     // ==========================================================================
     // INITIALIZATION & DUAL TOGGLE ENGINE
@@ -2446,11 +2991,13 @@
     function toggleDashboard() {
       const prioritiesWrapper = document.getElementById("dashboard-priorities-wrapper");
       const cleanAirWrapper = document.getElementById("dashboard-cleanair-wrapper");
+      const smartHealthWrapper = document.getElementById("dashboard-smarthealth-wrapper");
 
       if (currentActiveDashboard === "priorities") {
         // Toggle to CleanAir
         prioritiesWrapper.style.display = "none";
         cleanAirWrapper.style.display = "grid";
+        smartHealthWrapper.style.display = "none";
         currentActiveDashboard = "cleanair";
         document.title = "CleanAir & Clear Streets - Environment Command Center";
 
@@ -2468,8 +3015,31 @@
 
         applyCleanAirFilters();
         showToast("Switched Dashboard", "Shifting to CleanAir Command Console", "cleanair");
+      } else if (currentActiveDashboard === "cleanair") {
+        // Toggle to Smart Health
+        prioritiesWrapper.style.display = "none";
+        cleanAirWrapper.style.display = "none";
+        smartHealthWrapper.style.display = "grid";
+        currentActiveDashboard = "smarthealth";
+        document.title = "Smart Health - District Operations Control Console";
+
+        // Transition background styles and root theme variables on body
+        document.body.className = "smarthealth-theme";
+        document.documentElement.style.setProperty('--theme-bg', 'var(--bg-base-smarthealth)');
+        document.documentElement.style.setProperty('--theme-sidebar', 'var(--bg-sidebar-smarthealth)');
+        document.documentElement.style.setProperty('--theme-surface', 'var(--bg-surface-smarthealth)');
+        document.documentElement.style.setProperty('--theme-border', 'var(--border-smarthealth)');
+        document.documentElement.style.setProperty('--theme-accent', 'var(--accent-smarthealth)');
+        document.documentElement.style.setProperty('--theme-accent-glow', 'var(--accent-smarthealth-glow)');
+        document.documentElement.style.setProperty('--theme-muted', '#526075');
+        document.documentElement.style.setProperty('--glow-color-1', 'var(--accent-smarthealth)');
+        document.documentElement.style.setProperty('--glow-color-2', 'var(--color-green)');
+
+        applySmartHealthFilters();
+        showToast("Switched Dashboard", "Shifting to Smart Health Supply Control", "smarthealth");
       } else {
         // Toggle to Priorities
+        smartHealthWrapper.style.display = "none";
         cleanAirWrapper.style.display = "none";
         prioritiesWrapper.style.display = "grid";
         currentActiveDashboard = "priorities";
@@ -2490,6 +3060,18 @@
         applyPrioritiesFilters();
         showToast("Switched Dashboard", "Shifting to Priorities Planning Console", "priorities");
       }
+
+      // Update manual switcher buttons text to indicate what NEXT click does
+      document.querySelectorAll(".switcher-badge").forEach(btn => {
+        if (currentActiveDashboard === "priorities") {
+          btn.innerHTML = `<i data-lucide="repeat"></i> CleanAir Dashboard <span>Ctrl + \`</span>`;
+        } else if (currentActiveDashboard === "cleanair") {
+          btn.innerHTML = `<i data-lucide="repeat"></i> Smart Health <span>Ctrl + \`</span>`;
+        } else if (currentActiveDashboard === "smarthealth") {
+          btn.innerHTML = `<i data-lucide="repeat"></i> Priorities Dashboard <span>Ctrl + \`</span>`;
+        }
+      });
+
       lucide.createIcons();
     }
 
@@ -3357,11 +3939,382 @@
       applyPrioritiesFilters();
     }
 
+    // ==========================================================================
+    // DATABASE 3: SMART HEALTH (HOSPITALS & SUPPLIES)
+    // ==========================================================================
+    const SMARTHEALTH_DB = [
+      { id: 301, name: "District General Hospital", block: "West Housing", type: "CHC", footfall: 340, bedsTotal: 120, bedsAvailable: 18, stockoutsCount: 0, doctorsTotal: 18, doctorsPresent: 16, riskScore: 28, status: "Normal", details: "High patient volumes due to seasonal viral fever spikes. Supply chain lines are healthy.", recommended: "No immediate action required. Maintain standard stock level.", code: "H-301D" },
+      { id: 302, name: "Block-A Community Health Center", block: "Block-A", type: "CHC", footfall: 180, bedsTotal: 40, bedsAvailable: 3, stockoutsCount: 3, doctorsTotal: 8, doctorsPresent: 5, riskScore: 84, status: "Critical", details: "Critical shortage of anti-rabies vaccines and paracetamol IV drops. Bed occupancy at 92%.", recommended: "Redistribute 200 vials from District Hospital. Schedule urgent refill batch.", code: "H-302A" },
+      { id: 303, name: "West Housing Primary Health", block: "West Housing", type: "PHC", footfall: 95, bedsTotal: 10, bedsAvailable: 6, stockoutsCount: 1, doctorsTotal: 4, doctorsPresent: 2, riskScore: 62, status: "Alert", details: "Two medical officers on leave. Expected surge in prenatal screenings tomorrow.", recommended: "Shift 1 general physician from East Suburbs PHC for rotational shift duty.", code: "H-303W" },
+      { id: 304, name: "East Suburbs Primary Health", block: "East Suburbs", type: "PHC", footfall: 110, bedsTotal: 10, bedsAvailable: 8, stockoutsCount: 0, doctorsTotal: 4, doctorsPresent: 4, riskScore: 35, status: "Normal", details: "Operations stable. General screening equipment working at nominal load.", recommended: "None. Keep tracking inventory parameters.", code: "H-304E" },
+      { id: 305, name: "Bypass Road Trauma Centre", block: "Bypass Industrial", type: "CHC", footfall: 210, bedsTotal: 50, bedsAvailable: 4, stockoutsCount: 2, doctorsTotal: 10, doctorsPresent: 8, riskScore: 78, status: "Alert", details: "Trauma ward at full capacity due to bypass traffic incidents. Oxygen supply cylinder stock is low (2 days remaining).", recommended: "Approve emergency oxygen cylinder refilling contract immediately.", code: "H-305B" }
+    ];
+
+    const SMARTHEALTH_SUPPLIES = [
+      { id: 401, name: "Anti-Rabies Vaccine", stock: 12, unit: "vials", daysLeft: 2, status: "Critical", demand: "High" },
+      { id: 402, name: "Paracetamol IV 100ml", stock: 45, unit: "bottles", daysLeft: 3, status: "High Risk", demand: "Critical" },
+      { id: 403, name: "OR Powder Satchets", stock: 1200, unit: "satchets", daysLeft: 24, status: "Normal", demand: "Medium" },
+      { id: 404, name: "Amoxicillin 500mg", stock: 80, unit: "capsules", daysLeft: 4, status: "High Risk", demand: "High" }
+    ];
+
+    const HEALTH_ALERTS = [
+      { id: 501, title: "Vaccine Stockout Alert", location: "Block-A Community Health Center", time: "10:14 AM", severity: "Critical", details: "Zero anti-rabies vials logged in stock. 4 bite patients pending treatment." },
+      { id: 502, title: "Overcrowding Warning", location: "Bypass Road Trauma Centre", time: "11:20 AM", severity: "High", details: "Emergency bed occupancy has crossed 95% threshold. Staff under extreme load." },
+      { id: 503, title: "Staff Shortage Alert", location: "West Housing Primary Health", time: "11:45 AM", severity: "Medium", details: "50% doctor attendance due to combined emergency medical leaves." }
+    ];
+
+
+    // ==========================================================================
+    // MODULE SYSTEM: SMART HEALTH (GREEN/TEAL DASHBOARD LOGIC)
+    // ==========================================================================
+    function resetSmartHealthFilters() {
+      document.getElementById("filter-health-block").value = "All";
+      document.getElementById("filter-health-type").value = "All";
+      document.getElementById("filter-health-urgency").value = "All";
+      document.getElementById("search-bar-smarthealth").value = "";
+      applySmartHealthFilters();
+    }
+
+    function applySmartHealthFilters() {
+      const blockFilter = document.getElementById("filter-health-block").value;
+      const typeFilter = document.getElementById("filter-health-type").value;
+      const urgencyFilter = document.getElementById("filter-health-urgency").value;
+      const searchQuery = document.getElementById("search-bar-smarthealth").value.toLowerCase();
+
+      smartHealthFilteredData = SMARTHEALTH_DB.filter(item => {
+        if (blockFilter !== "All" && item.block !== blockFilter) return false;
+        if (typeFilter !== "All" && item.type !== typeFilter) return false;
+        
+        if (urgencyFilter !== "All" && item.status !== urgencyFilter) return false;
+
+        if (searchQuery && !item.name.toLowerCase().includes(searchQuery)) return false;
+
+        return true;
+      });
+
+      // Synchronize selection
+      if (smartHealthFilteredData.length > 0) {
+        if (!smartHealthFilteredData.some(item => item.id === selectedSmartHealthId)) {
+          selectedSmartHealthId = smartHealthFilteredData[0].id;
+        }
+      } else {
+        selectedSmartHealthId = null;
+      }
+
+      syncHealthMapOutlines(blockFilter);
+      renderSmartHealthKPIs();
+      renderSmartHealthStockGrid();
+      renderSmartHealthTable();
+      renderSmartHealthAlerts();
+      renderSmartHealthAIRecommendation();
+      updateSmartHealthCharts();
+    }
+
+    function syncHealthMapOutlines(activeBlock) {
+      document.querySelectorAll("#dashboard-smarthealth-wrapper .health-map-path").forEach(path => {
+        const block = path.getAttribute("data-block");
+        path.classList.remove("active-filter");
+        
+        if (activeBlock !== "All" && block === activeBlock) {
+          path.classList.add("active-filter");
+        }
+
+        const blockFacs = SMARTHEALTH_DB.filter(item => item.block === block);
+        if (blockFacs.some(item => item.status === "Critical")) {
+          path.classList.add("status-critical");
+        } else {
+          path.classList.remove("status-critical");
+        }
+      });
+    }
+
+    function filterHealthMap(blockName) {
+      const select = document.getElementById("filter-health-block");
+      select.value = select.value === blockName ? "All" : blockName;
+      applySmartHealthFilters();
+    }
+
+    // Health map tooltips
+    const healthMapPaths = document.querySelectorAll("#dashboard-smarthealth-wrapper .health-map-path");
+    const healthTooltip = document.getElementById("health-map-tooltip");
+
+    healthMapPaths.forEach(path => {
+      const blockName = path.getAttribute("data-block");
+      path.addEventListener("mouseenter", () => {
+        const facs = SMARTHEALTH_DB.filter(d => d.block === blockName);
+        const foot = facs.reduce((s, c) => s + c.footfall, 0);
+        const isCritical = facs.some(d => d.status === "Critical");
+        
+        document.getElementById("health-tooltip-title").innerText = blockName.toUpperCase();
+        document.getElementById("health-tooltip-footfall").innerText = foot;
+        document.getElementById("health-tooltip-status").innerText = isCritical ? "CRITICAL OUTAGES" : "STABLE";
+        healthTooltip.style.opacity = "1";
+      });
+
+      path.addEventListener("mousemove", (e) => {
+        const wrapper = path.closest(".map-wrapper");
+        const rect = wrapper.getBoundingClientRect();
+        healthTooltip.style.left = `${e.clientX - rect.left + 15}px`;
+        healthTooltip.style.top = `${e.clientY - rect.top + 15}px`;
+      });
+
+      path.addEventListener("mouseleave", () => {
+        healthTooltip.style.opacity = "0";
+      });
+    });
+
+    function renderSmartHealthKPIs() {
+      const foot = smartHealthFilteredData.reduce((sum, i) => sum + i.footfall, 0);
+      document.getElementById("health-kpi-footfall").innerText = foot;
+
+      const beds = smartHealthFilteredData.reduce((sum, i) => sum + i.bedsAvailable, 0);
+      document.getElementById("health-kpi-beds").innerText = beds;
+
+      const stockouts = smartHealthFilteredData.reduce((sum, i) => sum + i.stockoutsCount, 0);
+      document.getElementById("health-kpi-stockouts").innerText = stockouts;
+
+      const docs = smartHealthFilteredData.reduce((sum, i) => sum + i.doctorsPresent, 0);
+      document.getElementById("health-kpi-doctors").innerText = docs;
+
+      const alerts = HEALTH_ALERTS.length;
+      document.getElementById("health-kpi-alerts").innerText = alerts;
+    }
+
+    function renderSmartHealthStockGrid() {
+      const container = document.getElementById("health-stock-grid");
+      container.innerHTML = "";
+
+      SMARTHEALTH_SUPPLIES.forEach(item => {
+        const card = document.createElement("div");
+        const isLow = item.daysLeft <= 4;
+        card.className = `stock-countdown-card ${isLow ? 'low' : ''}`;
+
+        card.innerHTML = `
+          <span class="stock-countdown-value">${item.stock} ${item.unit}</span>
+          <span style="font-size:10px; font-weight:700; color:#fff;">${item.name}</span>
+          <span class="stock-countdown-label" style="color: ${isLow ? 'var(--color-red)' : '#64748b'};">
+            ${item.daysLeft} Days Remaining
+          </span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderSmartHealthTable() {
+      const tbody = document.getElementById("health-table-body");
+      tbody.innerHTML = "";
+
+      if (smartHealthFilteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#575e75;">No centers matched filters.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...smartHealthFilteredData].sort((a, b) => {
+        let valA = a[smartHealthSortCol];
+        let valB = b[smartHealthSortCol];
+        return smartHealthSortDir === 'desc' ? valB - valA : valA - valB;
+      });
+
+      sorted.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.className = item.id === selectedSmartHealthId ? "selected" : "";
+        tr.onclick = () => selectHealthRow(item.id);
+
+        const badgeClass = item.status === 'Critical' ? 'badge-critical' : (item.status === 'Alert' ? 'badge-high' : 'badge-medium');
+
+        tr.innerHTML = `
+          <td style="font-weight:600; color:#fff;">${item.name}</td>
+          <td>${item.footfall} patients</td>
+          <td>${item.bedsAvailable} / ${item.bedsTotal}</td>
+          <td style="font-weight:700; color:${item.stockoutsCount > 0 ? 'var(--color-red)' : 'var(--color-green)'};">${item.stockoutsCount} stockouts</td>
+          <td>${item.doctorsPresent} / ${item.doctorsTotal} docs</td>
+          <td><span class="badge-urgency ${badgeClass}">${item.riskScore} Risk Index</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortHealthTable(col) {
+      if (smartHealthSortCol === col) {
+        smartHealthSortDir = smartHealthSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        smartHealthSortCol = col;
+        smartHealthSortDir = 'desc';
+      }
+      renderSmartHealthTable();
+    }
+
+    function selectHealthRow(id) {
+      selectedSmartHealthId = id;
+      renderSmartHealthTable();
+      renderSmartHealthAIRecommendation();
+    }
+
+    function renderSmartHealthAlerts() {
+      const container = document.getElementById("health-alerts-list");
+      container.innerHTML = "";
+
+      HEALTH_ALERTS.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "cluster-item expanded";
+
+        div.innerHTML = `
+          <div class="cluster-header" style="cursor:default;">
+            <h4 style="color:var(--color-red); font-size:12px;"><i data-lucide="shield-alert" style="width:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> ${item.title}</h4>
+            <span class="badge-urgency badge-critical">${item.severity}</span>
+          </div>
+          <div class="cluster-body" style="display:block; padding:10px 16px; background:rgba(0,0,0,0.1);">
+            <p style="font-size:11px; color:#cbd5e1;"><strong>${item.location}</strong> &bull; ${item.details}</p>
+            <p style="font-size:9px; color:#64748b; margin-top:4px;">Triggered at: ${item.time}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function renderSmartHealthAIRecommendation() {
+      const container = document.getElementById("health-dispatch-box");
+      container.innerHTML = "";
+
+      const activeItem = SMARTHEALTH_DB.find(item => item.id === selectedSmartHealthId);
+      if (!activeItem) return;
+
+      // Doctor attendance subpanel rendering inside recommendation block
+      const attendList = document.getElementById("health-attendance-list");
+      attendList.innerHTML = `
+        <div class="op-item">
+          <div class="op-left">
+            <div class="op-icon" style="color:var(--accent-smarthealth);"><i data-lucide="user-check"></i></div>
+            <div class="op-info">
+              <h4>Present Staff</h4>
+              <p>${activeItem.doctorsPresent} Medical Officers</p>
+            </div>
+          </div>
+        </div>
+        <div class="op-item">
+          <div class="op-left">
+            <div class="op-icon" style="color:var(--color-red);"><i data-lucide="user-x"></i></div>
+            <div class="op-info">
+              <h4>Absent / Leave</h4>
+              <p>${activeItem.doctorsTotal - activeItem.doctorsPresent} Medical Officers</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = `
+        <h4 style="color:#fff; font-size:13px;"><i data-lucide="cpu" style="width:16px; display:inline-block; vertical-align:middle; color:var(--accent-smarthealth);"></i> Supply AI Recommendation</h4>
+        <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin-top:6px;">
+          Center code ${activeItem.code} matches shortage parameters for local care grid. Recommended dispatcher actions:
+        </p>
+        <div style="background:rgba(0,0,0,0.2); padding:10px 12px; border-radius:6px; font-size:11px; margin-top:6px;">
+          <span style="color:var(--accent-smarthealth); font-weight:700;">AI TARGET DISPATCH:</span><br/>
+          ${activeItem.recommended}
+        </div>
+        <button class="btn-approve" onclick="dispatchSmartHealthOps(${activeItem.id})" style="background:var(--accent-smarthealth); margin-top:8px; box-shadow:0 4px 15px rgba(0,180,216,0.25);">
+          <i data-lucide="truck"></i> Schedule Refill Refits
+        </button>
+      `;
+      lucide.createIcons();
+    }
+
+    function dispatchSmartHealthOps(itemId) {
+      const item = SMARTHEALTH_DB.find(d => d.id === itemId);
+      showToast("Refills Scheduled", `Stock dispatch approved for ${item.name}`, "smarthealth");
+    }
+
+    function updateSmartHealthCharts() {
+      const daysLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const footfallHistoricalForecast = [210, 245, 290, 275, 310, 380, 340];
+
+      if (smarthealthFootfallChart) {
+        smarthealthFootfallChart.update();
+      } else {
+        const ctx = document.getElementById('healthTrendChart').getContext('2d');
+        smarthealthFootfallChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: daysLabels,
+            datasets: [{
+              label: 'Patient Footfall',
+              data: footfallHistoricalForecast,
+              borderColor: '#00b4d8',
+              backgroundColor: 'rgba(0, 180, 216, 0.08)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#64748b', font: { size: 9 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+            }
+          }
+        });
+      }
+
+      const items = ["Vaccine", "Paracetamol", "Amoxicillin", "Syringes"];
+      const stockVals = [12, 45, 80, 350];
+
+      if (smarthealthForecastChart) {
+        smarthealthForecastChart.update();
+      } else {
+        const ctx2 = document.getElementById('healthSourceChart').getContext('2d');
+        smarthealthForecastChart = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: items,
+            datasets: [{
+              data: stockVals,
+              backgroundColor: ['#ff453a', '#ff9f0a', '#ff9f0a', '#30d158'],
+              borderWidth: 0,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+              y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10, weight: 600 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function exportHealthCSV() {
+      const headers = ["Center", "Block", "Footfall", "Available Beds", "Stockouts", "Staff Attendance", "Risk Score (%)"];
+      const rows = smartHealthFilteredData.map(item => [item.name, item.block, item.footfall, item.bedsAvailable, item.stockoutsCount, item.doctorsPresent, item.riskScore]);
+      const csv = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `District_Health_Telemetry_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+
     function showToast(title, desc, mode) {
       const toast = document.getElementById("toast");
       if (mode === "cleanair") {
         toast.className = "toast cleanair-toast show";
         toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="shield-alert" style="color:var(--color-red);"></i>`;
+      } else if (mode === "smarthealth") {
+        toast.className = "toast smarthealth-toast show";
+        toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="heart-pulse" style="color:var(--accent-smarthealth);"></i>`;
       } else {
         toast.className = "toast priorities-toast show";
         toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="check" style="color:var(--color-blue);"></i>`;
