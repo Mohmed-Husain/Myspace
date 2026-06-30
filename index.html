@@ -6,7 +6,7 @@
   <title>People's Priorities - Constituency Planning AI Dashboard</title>
   
   <!-- SEO & Accessibility -->
-  <meta name="description" content="State-of-the-art constituency development planning dashboard. Driven by citizen priority tracking, AI-powered classification, and GIS heatmap analytics.">
+  <meta name="description" content="Dual-mode AI Decision Support Dashboard. Includes People's Priorities (Constituency Development Planning) and CleanAir & Clear Streets (Environmental Command Center).">
   
   <!-- Google Fonts (Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,29 +20,46 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Styling Tokens & Modern Variables */
+    /* ==========================================================================
+       THEMING VARIABLES & ROOT
+       ========================================================================== */
     :root {
-      --bg-base: #090d16;
-      --bg-sidebar: rgba(13, 20, 35, 0.8);
-      --bg-surface: rgba(18, 28, 48, 0.45);
-      --bg-surface-hover: rgba(24, 38, 64, 0.6);
-      --border-color: rgba(255, 255, 255, 0.06);
-      --border-hover: rgba(255, 255, 255, 0.12);
-      
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
+      --bg-base-priorities: #080b11;
+      --bg-sidebar-priorities: rgba(11, 16, 26, 0.85);
+      --bg-surface-priorities: rgba(16, 24, 39, 0.45);
+      --border-priorities: rgba(255, 255, 255, 0.05);
+      --accent-priorities: #0071e3;
+      --accent-priorities-glow: rgba(0, 113, 227, 0.35);
+
+      --bg-base-cleanair: #07080a;
+      --bg-sidebar-cleanair: rgba(13, 14, 18, 0.88);
+      --bg-surface-cleanair: rgba(22, 24, 30, 0.45);
+      --border-cleanair: rgba(255, 255, 255, 0.04);
+      --accent-cleanair: #ff453a;
+      --accent-cleanair-glow: rgba(255, 69, 58, 0.35);
       
       --color-blue: #0071e3;
-      --color-blue-glow: rgba(0, 113, 227, 0.35);
+      --color-blue-glow: rgba(0, 113, 227, 0.2);
       --color-red: #ff453a;
-      --color-red-glow: rgba(255, 69, 58, 0.25);
+      --color-red-glow: rgba(255, 69, 58, 0.2);
       --color-orange: #ff9f0a;
       --color-green: #30d158;
       --color-purple: #bf5af2;
       --color-cyan: #64d2ff;
       
       --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      
+      /* Active dashboard variables mapped on toggle */
+      --theme-bg: var(--bg-base-priorities);
+      --theme-sidebar: var(--bg-sidebar-priorities);
+      --theme-surface: var(--bg-surface-priorities);
+      --theme-border: var(--border-priorities);
+      --theme-accent: var(--accent-priorities);
+      --theme-accent-glow: var(--accent-priorities-glow);
+      --theme-muted: #64748b;
+      
+      --glow-color-1: var(--color-blue);
+      --glow-color-2: var(--color-purple);
     }
 
     * {
@@ -53,15 +70,16 @@
 
     html, body {
       font-family: var(--font-sans);
-      background-color: var(--bg-base);
-      color: var(--text-primary);
+      background-color: var(--theme-bg);
+      color: #f8fafc;
       overflow-x: hidden;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Scrollbar Styling */
+    /* Scrollbars */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -77,7 +95,7 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Ambient Background Light Effects */
+    /* Ambient Background Glow */
     .bg-glow-container {
       position: fixed;
       top: 0;
@@ -91,21 +109,37 @@
 
     .bg-glow {
       position: absolute;
-      width: 600px;
-      height: 600px;
+      width: 500px;
+      height: 500px;
       border-radius: 50%;
-      filter: blur(150px);
-      opacity: 0.08;
-      background-color: var(--color-blue);
-      animation: float-slow 25s infinite alternate;
+      filter: blur(140px);
+      opacity: 0.14;
+      transition: background-color 0.8s ease, transform 10s ease-in-out;
     }
 
-    .glow-1 { top: -200px; left: -100px; }
-    .glow-2 { bottom: -200px; right: -100px; opacity: 0.05; background-color: var(--color-purple); }
+    .glow-1 {
+      top: -100px;
+      left: -100px;
+      background-color: var(--glow-color-1);
+      animation: float-glow-1 20s infinite alternate;
+    }
 
-    @keyframes float-slow {
+    .glow-2 {
+      bottom: -100px;
+      right: -100px;
+      background-color: var(--glow-color-2);
+      opacity: 0.09;
+      animation: float-glow-2 25s infinite alternate;
+    }
+
+    @keyframes float-glow-1 {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(100px, 80px) scale(1.15); }
+      100% { transform: translate(80px, 50px) scale(1.15); }
+    }
+
+    @keyframes float-glow-2 {
+      0% { transform: translate(0, 0) scale(1.15); }
+      100% { transform: translate(-60px, -40px) scale(0.9); }
     }
 
     /* High-tech Grid Background Overlay */
@@ -117,43 +151,26 @@
       height: 100%;
       z-index: -1;
       background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.008) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.008) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
     }
 
-    /* Glassmorphism Card Style */
-    .glass-card {
-      background: var(--bg-surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-    }
-
-    .glass-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Layout Frame */
+    /* ==========================================================================
+       COMMON LAYOUT GRID
+       ========================================================================== */
     .dashboard-layout {
       display: grid;
       grid-template-columns: 280px 1fr;
-      min-height: 100vh;
+      height: 100vh;
+      max-height: 100vh;
       overflow: hidden;
     }
 
-    /* ==========================================================================
-       1. LEFT SIDEBAR
-       ========================================================================== */
     .sidebar {
-      background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-color);
+      background: var(--theme-sidebar);
+      border-right: 1px solid var(--theme-border);
       padding: 28px 20px;
       display: flex;
       flex-direction: column;
@@ -163,151 +180,9 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: background-color 0.8s ease, border-color 0.8s ease;
     }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--color-blue), #004b93);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 15px var(--color-blue-glow);
-    }
-
-    .logo-text h2 {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .logo-text p {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    /* Sidebar Navigation Links */
-    .nav-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .nav-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      padding-left: 8px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      text-align: left;
-      width: 100%;
-    }
-
-    .nav-item i {
-      width: 16px;
-      height: 16px;
-      color: var(--text-muted);
-      transition: color 0.2s ease;
-    }
-
-    .nav-item:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .nav-item:hover i {
-      color: var(--color-blue);
-    }
-
-    .nav-item.active {
-      color: var(--text-primary);
-      background: rgba(0, 113, 227, 0.15);
-      border: 1px solid rgba(0, 113, 227, 0.25);
-      font-weight: 600;
-    }
-
-    .nav-item.active i {
-      color: var(--color-blue);
-    }
-
-    /* Filters Panel in Sidebar */
-    .filters-section {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .filter-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .filter-item label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      letter-spacing: 0.02em;
-    }
-
-    .filter-select {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.2s ease;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .filter-select:focus {
-      border-color: var(--color-blue);
-      box-shadow: 0 0 0 2px var(--color-blue-glow);
-    }
-
-    /* ==========================================================================
-       2. TOP HEADER
-       ========================================================================== */
     .workspace {
       display: flex;
       flex-direction: column;
@@ -315,10 +190,28 @@
       overflow-y: auto;
     }
 
-    .header {
-      background: rgba(9, 13, 22, 0.8);
+    /* Shared Glassmorphism Cards */
+    .glass-card {
+      background: var(--theme-surface);
       backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-color);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--theme-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background-color 0.8s ease;
+    }
+
+    .glass-card:hover {
+      border-color: var(--theme-accent);
+      box-shadow: 0 12px 40px var(--theme-accent-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Shared Header components */
+    .header {
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--theme-border);
       padding: 16px 40px;
       display: flex;
       align-items: center;
@@ -326,11 +219,13 @@
       position: sticky;
       top: 0;
       z-index: 90;
+      background: rgba(8, 11, 17, 0.3);
+      transition: border-color 0.8s ease;
     }
 
     .search-bar-container {
       position: relative;
-      width: 320px;
+      width: 300px;
     }
 
     .search-bar-container i {
@@ -338,7 +233,7 @@
       left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
+      color: var(--theme-muted);
       width: 16px;
       height: 16px;
     }
@@ -348,7 +243,7 @@
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 100px;
       padding: 10px 16px 10px 42px;
-      color: var(--text-primary);
+      color: #fff;
       font-size: 13px;
       font-family: var(--font-sans);
       width: 100%;
@@ -358,16 +253,49 @@
 
     .search-input:focus {
       background: rgba(255, 255, 255, 0.05);
-      border-color: var(--color-blue);
-      box-shadow: 0 0 10px var(--color-blue-glow);
-      width: 360px;
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 10px var(--theme-accent-glow);
+      width: 340px;
     }
 
-    /* Top Controls Row */
     .header-actions {
       display: flex;
       align-items: center;
       gap: 20px;
+    }
+
+    /* Active switcher button styled like top tier badge */
+    .switcher-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #cbd5e1;
+      transition: all 0.2s ease;
+    }
+
+    .switcher-badge:hover {
+      border-color: var(--theme-accent);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      box-shadow: 0 0 12px var(--theme-accent-glow);
+    }
+
+    .switcher-badge span {
+      background: var(--theme-accent-glow);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      margin-left: 4px;
     }
 
     .action-btn {
@@ -379,7 +307,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary);
+      color: #94a3b8;
       cursor: pointer;
       position: relative;
       transition: all 0.2s ease;
@@ -387,8 +315,7 @@
 
     .action-btn:hover {
       background: rgba(255, 255, 255, 0.06);
-      color: var(--text-primary);
-      border-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
     }
 
     .btn-badge {
@@ -400,23 +327,6 @@
       border-radius: 50%;
       background-color: var(--color-red);
       box-shadow: 0 0 8px var(--color-red);
-    }
-
-    .lang-toggle {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .lang-toggle:hover {
-      border-color: var(--color-blue);
-      color: var(--text-primary);
     }
 
     .profile-card {
@@ -436,38 +346,145 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-primary);
+      color: #fff;
       font-size: 12px;
       font-weight: 700;
     }
 
-    .profile-info {
-      text-align: left;
+    /* Common logo */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .profile-info h4 {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-primary);
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .profile-info p {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 500;
+    .logo-text h2 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* ==========================================================================
-       3. MAIN DASHBOARD CONTENT
-       ========================================================================== */
-    .main-content {
-      padding: 32px 40px;
+    .logo-text p {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Navigation Items inside Sidebar */
+    .nav-group {
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 6px;
     }
 
-    /* KPI grid */
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+    }
+
+    .nav-item i {
+      width: 16px;
+      height: 16px;
+      color: #575e75;
+      transition: color 0.2s ease;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item:hover i {
+      color: var(--theme-accent);
+    }
+
+    .nav-item.active {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Filters Section in Sidebar */
+    .filters-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-item label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: 0.02em;
+    }
+
+    .filter-select {
+      background: #090a0e;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s ease;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .filter-select:focus {
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 0 2px var(--theme-accent-glow);
+    }
+
+    /* KPI Grid */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -485,7 +502,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--text-muted);
+      color: #64748b;
       margin-bottom: 8px;
     }
 
@@ -494,7 +511,7 @@
       font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1.1;
-      color: var(--text-primary);
+      color: #fff;
     }
 
     .kpi-trend {
@@ -514,55 +531,115 @@
       right: 16px;
       bottom: 16px;
       opacity: 0.03;
-      color: var(--text-primary);
+      color: #fff;
       width: 48px;
       height: 48px;
     }
 
-    /* ROW 2: GIS Heatmap & Charts */
-    .grid-gis-charts {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 24px;
-    }
-
-    .heatmap-card {
+    /* Tables */
+    .table-card {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      position: relative;
     }
 
-    .card-header {
+    .table-actions {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 10px;
     }
 
-    .card-header h3 {
-      font-size: 15px;
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-export:hover {
+      border-color: var(--theme-accent);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    .ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .ranking-table th {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
       font-weight: 600;
       text-transform: uppercase;
+      font-size: 10px;
       letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-primary);
+      cursor: pointer;
+      user-select: none;
     }
 
-    .card-header h3 i {
-      color: var(--color-blue);
-      width: 18px;
-      height: 18px;
+    .ranking-table th i {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 4px;
+      color: #64748b;
     }
 
-    .card-subheader {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .ranking-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: #94a3b8;
+      transition: color 0.2s ease;
     }
 
-    /* SVG Interactive Map styling */
+    .ranking-table tr {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .ranking-table tr:hover td {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .ranking-table tr.selected td {
+      background: rgba(255, 255, 255, 0.03);
+      color: #fff;
+    }
+
+    .badge-urgency {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-critical { background: rgba(255, 69, 58, 0.12); border: 1px solid rgba(255, 69, 58, 0.25); color: var(--color-red); }
+    .badge-high { background: rgba(255, 159, 10, 0.12); border: 1px solid rgba(255, 159, 10, 0.25); color: var(--color-orange); }
+    .badge-medium { background: rgba(48, 209, 88, 0.12); border: 1px solid rgba(48, 209, 88, 0.25); color: var(--color-green); }
+    .badge-low { background: rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.25); color: #94a3b8; }
+
+
+    /* ==========================================================================
+       priorities SPECIFIC LAYOUT COMPONENTS
+       ========================================================================== */
     .map-wrapper {
       background: rgba(10, 15, 28, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.03);
@@ -582,8 +659,8 @@
     }
 
     .ward-path {
-      fill: rgba(0, 113, 227, 0.08);
-      stroke: rgba(255, 255, 255, 0.1);
+      fill: rgba(0, 113, 227, 0.06);
+      stroke: rgba(255, 255, 255, 0.12);
       stroke-width: 1.5;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
@@ -595,7 +672,6 @@
       filter: drop-shadow(0 0 12px var(--color-blue-glow));
     }
 
-    /* Dynamic overlay states for Map Wards */
     .ward-path.urgency-critical {
       fill: rgba(255, 69, 58, 0.15);
       stroke: rgba(255, 69, 58, 0.3);
@@ -609,8 +685,9 @@
 
     .ward-path.active-filter {
       stroke: var(--color-blue);
-      fill: rgba(0, 113, 227, 0.22) !important;
+      fill: rgba(0, 113, 227, 0.25) !important;
       stroke-width: 2.5;
+      filter: drop-shadow(0 0 12px var(--color-blue-glow));
     }
 
     /* Map Tooltip */
@@ -633,7 +710,7 @@
 
     .map-tooltip h5 {
       font-weight: 700;
-      color: var(--text-primary);
+      color: #fff;
       margin-bottom: 6px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 4px;
@@ -642,7 +719,7 @@
     }
 
     .map-tooltip p {
-      color: var(--text-secondary);
+      color: #94a3b8;
       margin-bottom: 3px;
       display: flex;
       justify-content: space-between;
@@ -650,11 +727,10 @@
 
     .map-tooltip span.value {
       font-weight: 600;
-      color: var(--text-primary);
+      color: #fff;
       margin-left: 10px;
     }
 
-    /* Map Legend */
     .map-legend {
       position: absolute;
       bottom: 16px;
@@ -673,7 +749,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      color: var(--text-secondary);
+      color: #94a3b8;
     }
 
     .legend-color {
@@ -682,36 +758,26 @@
       border-radius: 2px;
     }
 
-    /* Chart Card */
-    .chart-card {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    /* Grid Layouts for Sections */
+    .grid-gis-charts {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
     }
 
-    .chart-container {
-      position: relative;
-      height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-
-    /* ROW 3: Top Interventions & Duplicate Clustering */
     .grid-interventions-clustering {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
 
-    .interventions-card, .clustering-card {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .grid-insights-gap {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 24px;
     }
 
-    /* Top Urgent Interventions List */
+    /* Top Interventions List */
     .interventions-list {
       display: flex;
       flex-direction: column;
@@ -734,7 +800,7 @@
     }
 
     .intervention-item:hover {
-      background: var(--bg-surface-hover);
+      background: rgba(255,255,255,0.03);
       border-color: rgba(255, 255, 255, 0.08);
       transform: translateX(4px);
     }
@@ -754,7 +820,7 @@
     .int-rank {
       font-size: 13px;
       font-weight: 800;
-      color: var(--text-muted);
+      color: #64748b;
       width: 20px;
     }
 
@@ -765,7 +831,7 @@
     .int-details h4 {
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-primary);
+      color: #fff;
       line-height: 1.3;
       margin-bottom: 2px;
       white-space: nowrap;
@@ -775,7 +841,7 @@
 
     .int-details p {
       font-size: 10px;
-      color: var(--text-secondary);
+      color: #94a3b8;
     }
 
     .int-right {
@@ -794,11 +860,11 @@
 
     .int-cost {
       font-size: 10px;
-      color: var(--text-muted);
+      color: #64748b;
       margin-top: 4px;
     }
 
-    /* Duplicate Complaints Clustering Accordion */
+    /* Accordions duplicate feedback list */
     .cluster-list {
       display: flex;
       flex-direction: column;
@@ -810,7 +876,7 @@
 
     .cluster-item {
       border: 1px solid rgba(255, 255, 255, 0.03);
-      background: rgba(255, 255, 255, 0.01);
+      background: rgba(255, 255, 255, 0.015);
       border-radius: 12px;
       overflow: hidden;
       transition: all 0.2s ease;
@@ -833,7 +899,7 @@
     .cluster-header h4 {
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-primary);
+      color: #fff;
       max-width: 65%;
       white-space: nowrap;
       overflow: hidden;
@@ -857,7 +923,7 @@
     }
 
     .cluster-arrow {
-      color: var(--text-muted);
+      color: #64748b;
       transition: transform 0.2s ease;
     }
 
@@ -874,7 +940,7 @@
 
     .cluster-summary {
       font-size: 11px;
-      color: var(--text-secondary);
+      color: #94a3b8;
       line-height: 1.5;
       margin-bottom: 12px;
       padding-bottom: 10px;
@@ -885,7 +951,7 @@
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: #64748b;
       letter-spacing: 0.05em;
       margin-bottom: 8px;
     }
@@ -898,7 +964,7 @@
 
     .citizen-quote {
       font-size: 11px;
-      color: var(--text-muted);
+      color: #cbd5e1;
       line-height: 1.4;
       background: rgba(255, 255, 255, 0.015);
       border-left: 2px solid var(--color-blue);
@@ -906,126 +972,19 @@
       border-radius: 0 4px 4px 0;
     }
 
-
-    /* ROW 4: Priority Ranking Table */
-    .table-card {
+    .chart-container {
+      position: relative;
+      height: 320px;
       display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-export {
-      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-export:hover {
-      border-color: var(--color-blue);
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    .ranking-table {
+      justify-content: center;
       width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 13px;
     }
 
-    .ranking-table th {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      color: var(--text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 10px;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      user-select: none;
-    }
 
-    .ranking-table th i {
-      display: inline-block;
-      vertical-align: middle;
-      margin-left: 4px;
-      color: var(--text-muted);
-    }
-
-    .ranking-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-      color: var(--text-secondary);
-      transition: color 0.2s ease;
-    }
-
-    .ranking-table tr {
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .ranking-table tr:hover td {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.015);
-    }
-
-    .ranking-table tr.selected td {
-      background: rgba(0, 113, 227, 0.05);
-      color: var(--text-primary);
-    }
-
-    .ranking-table tr.selected {
-      border-left: 3px solid var(--color-blue);
-    }
-
-    .badge-urgency {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-
-    .badge-critical { background: rgba(255, 69, 58, 0.12); border: 1px solid rgba(255, 69, 58, 0.25); color: var(--color-red); }
-    .badge-high { background: rgba(255, 159, 10, 0.12); border: 1px solid rgba(255, 159, 10, 0.25); color: var(--color-orange); }
-    .badge-medium { background: rgba(48, 209, 88, 0.12); border: 1px solid rgba(48, 209, 88, 0.25); color: var(--color-green); }
-    .badge-low { background: rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.25); color: var(--text-secondary); }
-
-
-    /* ROW 5: Infrastructure Gap & AI Insights */
-    .grid-insights-gap {
-      display: grid;
-      grid-template-columns: 1fr 1.3fr;
-      gap: 24px;
-    }
-
-    .gap-card, .ai-card {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* Gap Comparison Bars */
+    /* ==========================================================================
+       priorities AI PANEL & GAP ANALYSIS
+       ========================================================================== */
     .gap-bars-list {
       display: flex;
       flex-direction: column;
@@ -1044,11 +1003,11 @@
       justify-content: space-between;
       font-size: 12px;
       font-weight: 600;
-      color: var(--text-primary);
+      color: #fff;
     }
 
     .gap-header span.pct-label {
-      color: var(--text-secondary);
+      color: #94a3b8;
       font-size: 11px;
     }
 
@@ -1081,29 +1040,8 @@
       transition: all 1s ease-in-out;
     }
 
-    .gap-legend-row {
-      display: flex;
-      gap: 16px;
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .gap-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .gap-color-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    /* AI Recommendation Panel */
     .ai-rec-box {
-      background: rgba(0, 113, 227, 0.03);
+      background: rgba(0, 113, 227, 0.02);
       border: 1px solid rgba(0, 113, 227, 0.12);
       border-radius: 12px;
       padding: 20px;
@@ -1137,21 +1075,21 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #94a3b8;
     }
 
     .rec-body h4 {
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-primary);
+      color: #fff;
       margin-bottom: 6px;
     }
 
     .rec-body p {
       font-size: 12px;
-      color: var(--text-secondary);
+      color: #94a3b8;
       line-height: 1.5;
     }
 
@@ -1172,13 +1110,13 @@
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: #64748b;
       margin-bottom: 4px;
     }
 
     .impact-item p {
       font-size: 11px;
-      color: var(--text-primary);
+      color: #fff;
       font-weight: 600;
     }
 
@@ -1200,7 +1138,7 @@
     .rec-next-action p {
       font-size: 12px;
       font-weight: 500;
-      color: var(--text-primary);
+      color: #fff;
     }
 
     .rec-buttons {
@@ -1210,7 +1148,7 @@
 
     .btn-approve {
       flex: 1;
-      background: var(--color-blue);
+      background: var(--theme-accent);
       border: none;
       color: #ffffff;
       padding: 10px 16px;
@@ -1219,19 +1157,23 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 15px rgba(0, 113, 227, 0.2);
+      box-shadow: 0 4px 15px var(--theme-accent-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-approve:hover {
-      background: #005bb7;
+      filter: brightness(1.15);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+      box-shadow: 0 6px 20px var(--theme-accent-glow);
     }
 
     .btn-defer {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.06);
-      color: var(--text-secondary);
+      color: #cbd5e1;
       padding: 10px 16px;
       font-size: 12px;
       font-weight: 600;
@@ -1242,17 +1184,303 @@
 
     .btn-defer:hover {
       background: rgba(255, 255, 255, 0.06);
-      color: var(--text-primary);
+      color: #fff;
     }
 
-    /* System Notification Toast */
+
+    /* ==========================================================================
+       CLEANAIR SPECIFIC LAYOUT COMPONENTS
+       ========================================================================== */
+    .satellite-map-container {
+      background: rgba(10, 11, 15, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      position: relative;
+      height: 320px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .satellite-svg-grid {
+      width: 100%;
+      height: 100%;
+    }
+
+    .pollution-marker {
+      fill: var(--marker-color, var(--color-red));
+      cursor: pointer;
+      transition: transform 0.2s ease, fill 0.2s ease;
+    }
+
+    .pollution-marker:hover {
+      transform: scale(1.3);
+      fill: #ffffff;
+    }
+
+    .pulse-ring {
+      fill: none;
+      stroke: var(--marker-color, var(--color-red));
+      stroke-width: 2;
+      opacity: 0.8;
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: pulse-ring-anim 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    @keyframes pulse-ring-anim {
+      0% { transform: scale(0.3); opacity: 0.8; stroke-width: 3; }
+      80%, 100% { transform: scale(1.8); opacity: 0; stroke-width: 0.5; }
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .evidence-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .evidence-card:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 69, 58, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .evidence-card.selected {
+      border-color: var(--color-red);
+      background: rgba(255, 69, 58, 0.05);
+    }
+
+    .evidence-photo-mock {
+      height: 120px;
+      background: linear-gradient(135deg, #1b1d26 0%, #111218 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--color-red);
+    }
+
+    .evidence-photo-mock i {
+      opacity: 0.4;
+    }
+
+    .evidence-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--color-red);
+      border: 1px solid rgba(255, 69, 58, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .evidence-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .evidence-body h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .evidence-meta {
+      font-size: 10px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .operations-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .op-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .op-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+    }
+
+    .op-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .op-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-red);
+    }
+
+    .op-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .op-info p {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .op-status {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .op-status.deployed {
+      background: rgba(255, 69, 58, 0.12);
+      border: 1px solid rgba(255, 69, 58, 0.25);
+      color: var(--color-red);
+    }
+
+    .op-status.standby {
+      background: rgba(48, 209, 88, 0.12);
+      border: 1px solid rgba(48, 209, 88, 0.25);
+      color: var(--color-green);
+    }
+
+    .op-dispatch-box {
+      background: rgba(255, 69, 58, 0.02);
+      border: 1px solid rgba(255, 69, 58, 0.12);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .predictive-timeline {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .timeline-hour-card {
+      flex: 1;
+      min-width: 70px;
+      padding: 12px 8px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .timeline-hour-card:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 69, 58, 0.25);
+    }
+
+    .tl-hour {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .tl-aqi {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .tl-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin: 0 auto;
+    }
+
+    /* Active Dashboard specific overrides */
+    #dashboard-priorities-wrapper .nav-item.active {
+      background: rgba(0, 113, 227, 0.15);
+      border: 1px solid rgba(0, 113, 227, 0.25);
+      color: #fff;
+    }
+    #dashboard-priorities-wrapper .nav-item.active i {
+      color: var(--color-blue);
+    }
+    #dashboard-priorities-wrapper .ranking-table tr.selected td {
+      background: rgba(0, 113, 227, 0.05);
+      color: #fff;
+    }
+    #dashboard-priorities-wrapper .ranking-table tr.selected {
+      border-left: 3px solid var(--color-blue);
+    }
+
+    #dashboard-cleanair-wrapper .nav-item.active {
+      background: rgba(255, 69, 58, 0.12);
+      border: 1px solid rgba(255, 69, 58, 0.22);
+      color: #fff;
+    }
+    #dashboard-cleanair-wrapper .nav-item.active i {
+      color: var(--color-red);
+    }
+    #dashboard-cleanair-wrapper .ranking-table tr.selected td {
+      background: rgba(255, 69, 58, 0.05);
+      color: #fff;
+    }
+    #dashboard-cleanair-wrapper .ranking-table tr.selected {
+      border-left: 3px solid var(--color-red);
+    }
+
+
+    /* Toast notifications */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
       background: rgba(13, 20, 35, 0.95);
-      border: 1px solid var(--color-blue);
-      box-shadow: 0 10px 30px rgba(0, 113, 227, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       border-radius: 12px;
       padding: 16px 20px;
       display: flex;
@@ -1269,36 +1497,54 @@
       opacity: 1;
     }
 
+    .toast.priorities-toast {
+      border: 1px solid var(--color-blue);
+      box-shadow: 0 10px 30px rgba(0, 113, 227, 0.2);
+    }
+
+    .toast.cleanair-toast {
+      border: 1px solid var(--color-red);
+      box-shadow: 0 10px 30px rgba(255, 69, 58, 0.2);
+    }
+
     .toast-icon {
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: rgba(0, 113, 227, 0.15);
-      color: var(--color-blue);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
+    .priorities-toast .toast-icon {
+      background: rgba(0, 113, 227, 0.15);
+      color: var(--color-blue);
+    }
+
+    .cleanair-toast .toast-icon {
+      background: rgba(255, 69, 58, 0.15);
+      color: var(--color-red);
+    }
+
     .toast-content h5 {
       font-size: 12px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #fff;
     }
 
     .toast-content p {
       font-size: 10px;
-      color: var(--text-secondary);
+      color: #94a3b8;
       margin-top: 2px;
     }
 
-    /* Print Styles for Premium PDF report output */
+    /* Print Styles */
     @media print {
       body {
         background: #ffffff !important;
         color: #000000 !important;
       }
-      .sidebar, .header, .btn-export, .rec-buttons, .toast {
+      .sidebar, .header, .btn-export, .toast, .switcher-badge {
         display: none !important;
       }
       .dashboard-layout {
@@ -1319,47 +1565,31 @@
         box-shadow: none !important;
         page-break-inside: avoid;
       }
-      .kpi-grid {
-        grid-template-columns: repeat(5, 1fr) !important;
-      }
-      .grid-gis-charts, .grid-interventions-clustering, .grid-insights-gap {
-        grid-template-columns: 1fr !important;
-      }
-      .ward-path {
-        fill: #f1f5f9 !important;
-        stroke: #94a3b8 !important;
-      }
-      .ranking-table th {
-        color: #000000 !important;
-        border-bottom: 2px solid #000000 !important;
-      }
-      .ranking-table td {
-        color: #334155 !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-      }
     }
   </style>
 </head>
-<body>
+<body class="priorities-theme">
 
   <!-- Background Orbs -->
   <div class="bg-glow-container">
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-1" id="ambient-glow-1"></div>
+    <div class="bg-glow glow-2" id="ambient-glow-2"></div>
   </div>
 
-  <!-- Ambient Grid -->
+  <!-- Ambient Grid overlay -->
   <div class="bg-grid"></div>
 
-  <!-- Main Layout -->
-  <div class="dashboard-layout">
+  <!-- ==========================================================================
+       DASHBOARD 1: PEOPLE'S PRIORITIES (CONSTITUENCY GAP PLANNING)
+       ========================================================================== -->
+  <div id="dashboard-priorities-wrapper" class="dashboard-layout">
     
-    <!-- 1. LEFT SIDEBAR -->
+    <!-- Left Sidebar -->
     <aside class="sidebar">
       
       <!-- Brand Logo -->
       <div class="logo-container">
-        <div class="logo-badge">
+        <div class="logo-badge" style="background: linear-gradient(135deg, var(--color-blue), #004b93);">
           <i data-lucide="bar-chart-3" style="color: #ffffff; width: 20px; height: 20px;"></i>
         </div>
         <div class="logo-text">
@@ -1371,34 +1601,34 @@
       <!-- Navigation links -->
       <div class="nav-group">
         <span class="nav-label" id="txt-nav-label">Analytics</span>
-        <button class="nav-item active" onclick="setNavActive(this)">
+        <button class="nav-item active">
           <i data-lucide="layout-dashboard"></i> <span id="txt-nav-overview">Overview</span>
         </button>
-        <button class="nav-item" onclick="setNavActive(this)">
+        <button class="nav-item">
           <i data-lucide="message-square"></i> <span id="txt-nav-requests">Citizen Requests</span>
         </button>
-        <button class="nav-item" onclick="setNavActive(this)">
+        <button class="nav-item">
           <i data-lucide="list-ordered"></i> <span id="txt-nav-ranking">Priority Ranking</span>
         </button>
-        <button class="nav-item" onclick="setNavActive(this)">
+        <button class="nav-item">
           <i data-lucide="map"></i> <span id="txt-nav-heatmap">GIS Heatmap</span>
         </button>
-        <button class="nav-item" onclick="setNavActive(this)">
+        <button class="nav-item">
           <i data-lucide="git-pull-request"></i> <span id="txt-nav-gap">Infrastructure Gap</span>
         </button>
-        <button class="nav-item" onclick="setNavActive(this)">
+        <button class="nav-item">
           <i data-lucide="cpu"></i> <span id="txt-nav-ai">AI Insights</span>
         </button>
       </div>
 
       <!-- Filters Panel -->
       <div class="filters-section">
-        <span class="nav-label" id="txt-filter-label">Filters</span>
+        <span class="nav-label">Filters</span>
         
         <!-- Region / Ward Filter -->
         <div class="filter-item">
-          <label for="filter-ward" id="lbl-filter-ward">Region / Ward</label>
-          <select id="filter-ward" class="filter-select" onchange="applyFilters()">
+          <label for="filter-ward">Region / Ward</label>
+          <select id="filter-ward" class="filter-select" onchange="applyPrioritiesFilters()">
             <option value="All" id="opt-all-wards">All Wards</option>
             <option value="Ward 1">Ward 1 - Central Hub</option>
             <option value="Ward 2">Ward 2 - Industrial Zone</option>
@@ -1410,8 +1640,8 @@
 
         <!-- Issue Category Filter -->
         <div class="filter-item">
-          <label for="filter-category" id="lbl-filter-category">Issue Category</label>
-          <select id="filter-category" class="filter-select" onchange="applyFilters()">
+          <label for="filter-category">Issue Category</label>
+          <select id="filter-category" class="filter-select" onchange="applyPrioritiesFilters()">
             <option value="All" id="opt-all-cats">All Categories</option>
             <option value="Roads">Roads & Streets</option>
             <option value="Water">Water Supply</option>
@@ -1424,8 +1654,8 @@
 
         <!-- Urgency Level Filter -->
         <div class="filter-item">
-          <label for="filter-urgency" id="lbl-filter-urgency">Urgency Level</label>
-          <select id="filter-urgency" class="filter-select" onchange="applyFilters()">
+          <label for="filter-urgency">Urgency Level</label>
+          <select id="filter-urgency" class="filter-select" onchange="applyPrioritiesFilters()">
             <option value="All" id="opt-all-urg">All Levels</option>
             <option value="Critical">Critical Only</option>
             <option value="High">High & Above</option>
@@ -1434,49 +1664,46 @@
           </select>
         </div>
 
-        <!-- Reset Button -->
-        <button class="btn-export" onclick="resetFilters()" style="margin-top: 10px; justify-content: center;">
-          <i data-lucide="refresh-cw"></i> <span id="txt-reset-filters">Reset Filters</span>
+        <button class="btn-export" onclick="resetPrioritiesFilters()" style="margin-top: 10px; justify-content: center;">
+          <i data-lucide="refresh-cw"></i> <span>Reset Filters</span>
         </button>
       </div>
 
     </aside>
 
-    <!-- 2. MAIN WORKSPACE -->
+    <!-- Workspace contents -->
     <main class="workspace">
       
-      <!-- Top Sticky Header -->
+      <!-- Top header -->
       <header class="header">
-        
-        <!-- Search bar -->
         <div class="search-bar-container">
           <i data-lucide="search"></i>
-          <input type="text" id="search-bar" class="search-input" placeholder="Search citizen issues..." oninput="applyFilters()">
+          <input type="text" id="search-bar-priorities" class="search-input" placeholder="Search citizen issues..." oninput="applyPrioritiesFilters()">
         </div>
 
-        <!-- Header Right controls -->
         <div class="header-actions">
           
-          <!-- Date Range Selector -->
+          <!-- Explicit Dashboard Switcher Button -->
+          <button class="switcher-badge" onclick="toggleDashboard()">
+            <i data-lucide="repeat"></i> CleanAir Dashboard <span>Ctrl + `</span>
+          </button>
+
           <div class="filter-item" style="flex-direction: row; align-items: center; gap: 8px;">
-            <i data-lucide="calendar" style="width: 16px; height: 16px; color: var(--text-muted);"></i>
-            <select id="filter-time" class="filter-select" onchange="applyFilters()" style="padding: 6px 28px 6px 12px; width: 140px;">
+            <i data-lucide="calendar" style="width: 16px; height: 16px; color: #64748b;"></i>
+            <select id="filter-time-priorities" class="filter-select" onchange="applyPrioritiesFilters()" style="padding: 6px 28px 6px 12px; width: 130px;">
               <option value="30">Last 30 Days</option>
               <option value="90">Last 90 Days</option>
               <option value="365">Last 1 Year</option>
             </select>
           </div>
 
-          <!-- Notification Bell -->
           <button class="action-btn">
             <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
             <span class="btn-badge"></span>
           </button>
 
-          <!-- Hindi Translation Switcher -->
           <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">HI</button>
 
-          <!-- Profile Badge -->
           <div class="profile-card">
             <div class="avatar">MP</div>
             <div class="profile-info">
@@ -1484,31 +1711,26 @@
               <p id="txt-profile-role">District MP Office</p>
             </div>
           </div>
-
         </div>
-
       </header>
 
-      <!-- 3. MAIN DASHBOARD CONTENT -->
+      <!-- Main view cards -->
       <div class="main-content">
         
-        <!-- KPI Cards Grid -->
+        <!-- KPIs -->
         <section class="kpi-grid">
-          
-          <!-- Card 1 -->
           <div class="glass-card kpi-card">
-            <span class="kpi-label" id="lbl-kpi-1">Total Requests</span>
+            <span class="kpi-label">Total Requests</span>
             <div class="kpi-value" id="kpi-total-requests">0</div>
             <div class="kpi-trend trend-up">
               <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
-              <span>+12.4% <span style="opacity: 0.5; font-weight: 400;" id="kpi-trend-mo">vs last month</span></span>
+              <span>+12.4% <span style="opacity: 0.5; font-weight: 400;">vs last month</span></span>
             </div>
             <i data-lucide="users" class="kpi-icon"></i>
           </div>
 
-          <!-- Card 2 -->
           <div class="glass-card kpi-card">
-            <span class="kpi-label" id="lbl-kpi-2">Merged Clusters</span>
+            <span class="kpi-label">Merged Clusters</span>
             <div class="kpi-value" id="kpi-unique-clusters">0</div>
             <div class="kpi-trend trend-up" style="color: var(--color-blue)">
               <i data-lucide="git-merge" style="width: 12px; height: 12px;"></i>
@@ -1517,151 +1739,121 @@
             <i data-lucide="layers" class="kpi-icon"></i>
           </div>
 
-          <!-- Card 3 -->
           <div class="glass-card kpi-card">
-            <span class="kpi-label" id="lbl-kpi-3">Urgent Interventions</span>
+            <span class="kpi-label">Urgent Interventions</span>
             <div class="kpi-value" id="kpi-high-priority" style="color: var(--color-red)">0</div>
             <div class="kpi-trend trend-down">
               <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i>
-              <span id="kpi-urgent-desc">Requires Funding</span>
+              <span>Requires Funding</span>
             </div>
             <i data-lucide="shield-alert" class="kpi-icon"></i>
           </div>
 
-          <!-- Card 4 -->
           <div class="glass-card kpi-card">
-            <span class="kpi-label" id="lbl-kpi-4">Hotspot Ward</span>
+            <span class="kpi-label">Hotspot Ward</span>
             <div class="kpi-value" id="kpi-hotspot-ward" style="font-size: 20px; padding-top: 6px;">Ward 1</div>
-            <div class="kpi-trend" style="color: var(--text-secondary)">
+            <div class="kpi-trend" style="color: #94a3b8">
               <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i>
-              <span id="kpi-hotspot-desc">Highest Demands</span>
+              <span>Highest Demands</span>
             </div>
             <i data-lucide="map" class="kpi-icon"></i>
           </div>
 
-          <!-- Card 5 -->
           <div class="glass-card kpi-card">
-            <span class="kpi-label" id="lbl-kpi-5">Response Coverage</span>
+            <span class="kpi-label">Response Coverage</span>
             <div class="kpi-value" id="kpi-coverage">88.5%</div>
             <div class="kpi-trend trend-up">
               <i data-lucide="check-circle-2" style="width: 12px; height: 12px;"></i>
-              <span id="kpi-coverage-desc">Resolutions Logged</span>
+              <span>Resolutions Logged</span>
             </div>
             <i data-lucide="shield-check" class="kpi-icon"></i>
           </div>
-
         </section>
 
-        <!-- ROW 2: GIS Heatmap (Left) & Category Doughnut Chart (Right) -->
+        <!-- GIS Heatmap & Doughnut Charts -->
         <div class="grid-gis-charts">
-          
-          <!-- Heatmap Card -->
           <div class="glass-card heatmap-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-map-title"><i data-lucide="map"></i> GIS Constituency Heatmap</h3>
-                <div class="card-subheader" id="txt-map-sub">Click a Ward region to isolate active constituency requests</div>
+                <h3><i data-lucide="map"></i> GIS Constituency Heatmap</h3>
+                <div class="card-subheader">Click a Ward region to isolate active constituency requests</div>
               </div>
             </div>
             
             <div class="map-wrapper">
-              
-              <!-- SVG Map Division (5 Wards interlocking hexagon segments) -->
               <svg viewBox="0 0 500 320" class="gis-map-svg">
-                <!-- Ward 2: Top Right -->
                 <polygon points="250,110 320,150 430,90 390,15 250,15" class="ward-path" data-ward="Ward 2" />
-                <!-- Ward 3: Bottom Right -->
                 <polygon points="320,150 320,230 430,280 470,180 430,90" class="ward-path" data-ward="Ward 3" />
-                <!-- Ward 4: Bottom Left -->
                 <polygon points="250,270 180,230 80,280 180,315 310,315 430,280" class="ward-path" data-ward="Ward 4" />
-                <!-- Ward 5: Top Left -->
                 <polygon points="180,150 250,110 250,15 120,15 30,100 80,180" class="ward-path" data-ward="Ward 5" />
-                <!-- Ward 1: Central Overlay (Hexagon center boundary) -->
                 <polygon points="250,110 320,150 320,230 250,270 180,230 180,150" class="ward-path" data-ward="Ward 1" />
-                
-                <!-- SVG Text Labels for Wards -->
                 <text x="250" y="195" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" pointer-events="none">WARD 1</text>
                 <text x="345" y="65" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" pointer-events="none">WARD 2</text>
                 <text x="395" y="190" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" pointer-events="none">WARD 3</text>
                 <text x="250" y="295" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" pointer-events="none">WARD 4</text>
                 <text x="135" y="90" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" pointer-events="none">WARD 5</text>
               </svg>
-
-              <!-- Map Legend -->
               <div class="map-legend">
                 <div class="legend-item">
                   <div class="legend-color" style="background-color: rgba(255, 69, 58, 0.4); border: 1px solid var(--color-red);"></div>
-                  <span id="txt-legend-high">Critical Density</span>
+                  <span>Critical Density</span>
                 </div>
                 <div class="legend-item">
                   <div class="legend-color" style="background-color: rgba(0, 113, 227, 0.2); border: 1px solid var(--color-blue);"></div>
-                  <span id="txt-legend-low">Standard Load</span>
+                  <span>Standard Load</span>
                 </div>
               </div>
-
-              <!-- Floating Tooltip -->
               <div class="map-tooltip" id="map-tooltip">
                 <h5 id="tooltip-title">Ward Name</h5>
-                <p><span id="txt-tooltip-total">Total Demands:</span> <span class="value" id="tooltip-total">0</span></p>
-                <p><span id="txt-tooltip-major">Major Sector:</span> <span class="value" id="tooltip-major">Roads</span></p>
-                <p><span id="txt-tooltip-severity">Avg Severity:</span> <span class="value" id="tooltip-severity" style="color: var(--color-red)">0%</span></p>
+                <p>Total Demands: <span class="value" id="tooltip-total">0</span></p>
+                <p>Major Sector: <span class="value" id="tooltip-major">Roads</span></p>
+                <p>Avg Severity: <span class="value" id="tooltip-severity" style="color: var(--color-red)">0%</span></p>
               </div>
-
             </div>
           </div>
 
-          <!-- Category Doughnut Chart -->
           <div class="glass-card chart-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-chart-title"><i data-lucide="pie-chart"></i> Issue Sector Distribution</h3>
-                <div class="card-subheader" id="txt-chart-sub">Proportional volume of complaints sorted by category</div>
+                <h3><i data-lucide="pie-chart"></i> Issue Sector Distribution</h3>
+                <div class="card-subheader">Proportional volume of complaints sorted by category</div>
               </div>
             </div>
             <div class="chart-container">
               <canvas id="categoryChart"></canvas>
             </div>
           </div>
-
         </div>
 
-        <!-- ROW 3: Top Interventions (Left) & Duplicate Clustering Accordion (Right) -->
+        <!-- Top Interventions & Duplicate Clusters -->
         <div class="grid-interventions-clustering">
-          
-          <!-- Top Interventions -->
           <div class="glass-card interventions-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-int-title"><i data-lucide="zap"></i> Top 5 Urgent Interventions</h3>
-                <div class="card-subheader" id="txt-int-sub">Ranked automatically by AI severity and citizen volume</div>
+                <h3><i data-lucide="zap"></i> Top 5 Urgent Interventions</h3>
+                <div class="card-subheader">Ranked automatically by AI severity and citizen volume</div>
               </div>
             </div>
-            <div class="interventions-list" id="interventions-list">
-              <!-- Dynamically populated in JS -->
-            </div>
+            <div class="interventions-list" id="interventions-list"></div>
           </div>
 
-          <!-- Duplicate Request Clustering -->
           <div class="glass-card clustering-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-cluster-title"><i data-lucide="layers"></i> Smart Feedback Clusters</h3>
-                <div class="card-subheader" id="txt-cluster-sub">Duplicate requests merged automatically by context models</div>
+                <h3><i data-lucide="layers"></i> Smart Feedback Clusters</h3>
+                <div class="card-subheader">Duplicate requests merged automatically by context models</div>
               </div>
             </div>
-            <div class="cluster-list" id="cluster-list">
-              <!-- Dynamically populated in JS -->
-            </div>
+            <div class="cluster-list" id="cluster-list"></div>
           </div>
-
         </div>
 
-        <!-- ROW 4: Priority Ranking Table -->
+        <!-- Priority Table -->
         <div class="glass-card table-card">
           <div class="card-header">
             <div>
-              <h3 id="txt-table-title"><i data-lucide="list-ordered"></i> Constituency Development Priorities</h3>
-              <div class="card-subheader" id="txt-table-sub">Sortable database of development targets generated from citizen complaints</div>
+              <h3><i data-lucide="list-ordered"></i> Constituency Development Priorities</h3>
+              <div class="card-subheader">Sortable database of development targets generated from citizen complaints</div>
             </div>
             <div class="table-actions">
               <button class="btn-export" onclick="exportCSV()"><i data-lucide="download"></i> Export CSV</button>
@@ -1672,79 +1864,456 @@
             <table class="ranking-table">
               <thead>
                 <tr>
-                  <th onclick="sortTable('title')" id="th-title">Issue Title <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
-                  <th onclick="sortTable('ward')" id="th-ward">Ward <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
-                  <th onclick="sortTable('volume')" id="th-requests">Requests <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
-                  <th onclick="sortTable('severity')" id="th-severity">Severity <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
-                  <th onclick="sortTable('cost')" id="th-cost">Est. Cost <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
-                  <th id="th-action">Suggested Action</th>
+                  <th onclick="sortPrioritiesTable('title')" id="th-title">Issue Title <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortPrioritiesTable('ward')" id="th-ward">Ward <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortPrioritiesTable('volume')" id="th-requests">Requests <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortPrioritiesTable('severity')" id="th-severity">Severity <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortPrioritiesTable('cost')" id="th-cost">Est. Cost <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th>Suggested Action</th>
                 </tr>
               </thead>
-              <tbody id="ranking-table-body">
-                <!-- Dynamically rendered in JS -->
-              </tbody>
+              <tbody id="ranking-table-body"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- ROW 5: Infrastructure Gap Comparison & AI Recommendation Panel -->
+        <!-- Infrastructure Gaps & AI Recommendation -->
         <div class="grid-insights-gap">
-          
-          <!-- Infrastructure Gap -->
           <div class="glass-card gap-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-gap-title"><i data-lucide="git-pull-request"></i> Infrastructure Gap Analysis</h3>
-                <div class="card-subheader" id="txt-gap-sub">Constituency services supply compared with citizen demands</div>
+                <h3><i data-lucide="git-pull-request"></i> Infrastructure Gap Analysis</h3>
+                <div class="card-subheader">Constituency services supply compared with citizen demands</div>
               </div>
             </div>
-            <div class="gap-bars-list" id="gap-bars-list">
-              <!-- Dynamically populated in JS -->
-            </div>
+            <div class="gap-bars-list" id="gap-bars-list"></div>
           </div>
 
-          <!-- AI Recommendation Panel -->
           <div class="glass-card ai-card">
             <div class="card-header">
               <div>
-                <h3 id="txt-ai-title"><i data-lucide="cpu"></i> AI Policy Recommendation</h3>
-                <div class="card-subheader" id="txt-ai-sub">Real-time resolution planning and dispatch advice</div>
+                <h3><i data-lucide="cpu"></i> AI Policy Recommendation</h3>
+                <div class="card-subheader">Real-time resolution planning and dispatch advice</div>
               </div>
             </div>
-            
-            <div class="ai-rec-box" id="ai-rec-box">
-              <!-- Dynamically loaded on Row Select -->
-            </div>
+            <div class="ai-rec-box" id="ai-rec-box"></div>
           </div>
-
         </div>
 
       </div>
 
       <!-- Footer Info -->
-      <footer style="padding: 24px 40px; border-top: 1px solid var(--border-color); text-align: center; font-size: 11px; color: var(--text-muted);">
+      <footer style="padding: 24px 40px; border-top: 1px solid var(--border-priorities); text-align: center; font-size: 11px; color: #64748b;">
         Constituency Intelligence & Development Planning System &bull; National Informatics Centre &bull; &copy; 2026 Government of India
       </footer>
 
     </main>
   </div>
 
-  <!-- Notification Toast -->
-  <div class="toast" id="toast">
+
+  <!-- ==========================================================================
+       DASHBOARD 2: CLEANAIR & CLEAR STREETS (ENVIRONMENTAL COMMAND CENTER)
+       ========================================================================== -->
+  <div id="dashboard-cleanair-wrapper" class="dashboard-layout" style="display: none;">
+    
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="logo-container">
+        <div class="logo-badge" style="background: linear-gradient(135deg, var(--color-red), #930000);">
+          <i data-lucide="wind" style="color: #ffffff; width: 20px; height: 20px;"></i>
+        </div>
+        <div class="logo-text">
+          <h2>CleanAir Central</h2>
+          <p>Environmental Command</p>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <div class="nav-group">
+        <span class="nav-label">COMMAND CONTROL</span>
+        <button class="nav-item active">
+          <i data-lucide="activity"></i> <span>Overview Console</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="map-pin"></i> <span>Hotspot Map</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="camera"></i> <span>Evidence Feed</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="radio"></i> <span>Sensor Network</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="trending-up"></i> <span>AQI Forecast</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="truck"></i> <span>Cleanup Ops</span>
+        </button>
+      </div>
+
+      <!-- Filters Panel -->
+      <div class="filters-section">
+        <span class="nav-label">CONSOLE CONTROLS</span>
+        
+        <!-- Region Filter -->
+        <div class="filter-item">
+          <label for="filter-zone">Command Sector</label>
+          <select id="filter-zone" class="filter-select" onchange="applyCleanAirFilters()">
+            <option value="All">All Sectors</option>
+            <option value="Sector-12 Junction">Sector-12 Intersection</option>
+            <option value="Bypass Industrial Area">Bypass Industrial Area</option>
+            <option value="Sector-4 Market">Sector-4 Commercial</option>
+            <option value="East Suburbs">East Suburbs Residential</option>
+            <option value="Central Metro Site">Central Metro construction</option>
+          </select>
+        </div>
+
+        <!-- Issue Category Filter -->
+        <div class="filter-item">
+          <label for="filter-pollutant">Primary Agent</label>
+          <select id="filter-pollutant" class="filter-select" onchange="applyCleanAirFilters()">
+            <option value="All">All Pollutants</option>
+            <option value="PM2.5">Particulate PM2.5</option>
+            <option value="PM10">Particulate PM10</option>
+            <option value="SO2">Sulfur Dioxide (SO2)</option>
+            <option value="NO2">Nitrogen Dioxide (NO2)</option>
+          </select>
+        </div>
+
+        <!-- Alert Severity Filter -->
+        <div class="filter-item">
+          <label for="filter-severity-level">Alarm Severity</label>
+          <select id="filter-severity-level" class="filter-select" onchange="applyCleanAirFilters()">
+            <option value="All">All Alarm States</option>
+            <option value="Critical">Critical Threshold</option>
+            <option value="High">High Alarm</option>
+            <option value="Moderate">Moderate Shift</option>
+          </select>
+        </div>
+
+        <button class="btn-export" onclick="resetCleanAirFilters()" style="margin-top: 10px; justify-content: center;">
+          <i data-lucide="refresh-cw"></i> <span>Reset Console</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Workspace contents -->
+    <main class="workspace">
+      
+      <!-- Top header -->
+      <header class="header">
+        <div class="search-bar-container">
+          <i data-lucide="search"></i>
+          <input type="text" id="search-bar-cleanair" class="search-input" placeholder="Search target location..." oninput="applyCleanAirFilters()">
+        </div>
+
+        <div class="header-actions">
+          
+          <!-- Explicit Dashboard Switcher Button -->
+          <button class="switcher-badge" onclick="toggleDashboard()">
+            <i data-lucide="repeat"></i> Priorities Dashboard <span>Ctrl + `</span>
+          </button>
+
+          <div class="filter-item" style="flex-direction: row; align-items: center; gap: 8px;">
+            <i data-lucide="clock" style="width: 16px; height: 16px; color: #575e75;"></i>
+            <select id="filter-time-cleanair" class="filter-select" onchange="applyCleanAirFilters()" style="padding: 6px 28px 6px 12px; width: 130px;">
+              <option value="live">Live Telemetry</option>
+              <option value="12">Last 12 Hours</option>
+              <option value="24">Last 24 Hours</option>
+            </select>
+          </div>
+
+          <button class="action-btn" style="color: var(--color-red); border-color: rgba(255,69,58,0.25); background: rgba(255,69,58,0.05);">
+            <i data-lucide="bell"></i>
+            <span class="btn-badge"></span>
+          </button>
+
+          <div class="profile-card">
+            <div class="avatar" style="border-color: rgba(255,69,58,0.25);">AQ</div>
+            <div class="profile-info">
+              <h4>Enviro Officer</h4>
+              <p>Municipal Command</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main view cards -->
+      <div class="main-content">
+        
+        <!-- KPIs -->
+        <section class="kpi-grid">
+          <div class="glass-card kpi-card" style="border-color: rgba(255, 69, 58, 0.25);">
+            <span class="kpi-label">Current Avg AQI</span>
+            <div class="kpi-value" id="cleanair-kpi-aqi" style="color: var(--color-red);">182</div>
+            <div class="kpi-trend trend-up" style="color: var(--color-red);">
+              <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+              <span>High Alert Level</span>
+            </div>
+            <i data-lucide="wind" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Active Hotspots</span>
+            <div class="kpi-value" id="cleanair-kpi-hotspots">5</div>
+            <div class="kpi-trend" style="color: var(--color-orange);">
+              <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i>
+              <span>Monitored sectors</span>
+            </div>
+            <i data-lucide="alert-triangle" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Smoke Incidents</span>
+            <div class="kpi-value" id="cleanair-kpi-smoke">12</div>
+            <div class="kpi-trend" style="color: var(--text-secondary);">
+              <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
+              <span>Past 24 Hours</span>
+            </div>
+            <i data-lucide="flame" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Garbage Burns</span>
+            <div class="kpi-value" id="cleanair-kpi-garbage" style="color: var(--color-orange);">8</div>
+            <div class="kpi-trend trend-down" style="color: var(--color-green);">
+              <i data-lucide="trending-down" style="width: 12px; height: 12px;"></i>
+              <span>-2 this hour</span>
+            </div>
+            <i data-lucide="trash-2" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">High-Risk Zones</span>
+            <div class="kpi-value" id="cleanair-kpi-risk">2</div>
+            <div class="kpi-trend" style="color: var(--color-red);">
+              <i data-lucide="shield-alert" style="width: 12px; height: 12px;"></i>
+              <span>Action Dispatched</span>
+            </div>
+            <i data-lucide="shield-alert" class="kpi-icon"></i>
+          </div>
+        </section>
+
+        <!-- GIS Satellite Map & Forecast Line Chart -->
+        <div class="grid-gis-charts">
+          <div class="glass-card heatmap-card" style="border-color: rgba(255,69,58,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="map" style="color: var(--color-red);"></i> GIS Pollution Hotspot Grid</h3>
+                <div class="card-subheader">Live city network monitoring station. Click markers to filter locations.</div>
+              </div>
+            </div>
+            
+            <div class="satellite-map-container">
+              <svg viewBox="0 0 500 350" class="satellite-svg-grid">
+                <!-- Styled Grid representation of streets -->
+                <line x1="50" y1="0" x2="50" y2="350" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="150" y1="0" x2="150" y2="350" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="250" y1="0" x2="250" y2="350" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="350" y1="0" x2="350" y2="350" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="450" y1="0" x2="450" y2="350" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="0" y1="70" x2="500" y2="70" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="0" y1="170" x2="500" y2="170" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+                <line x1="0" y1="270" x2="500" y2="270" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+
+                <!-- Mock street grid lines -->
+                <path d="M20,50 L200,80 L350,80 L480,110 M100,320 L150,180 L200,80 M280,340 L350,180 L420,50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" />
+                <path d="M50,120 L180,180 L300,160 L450,220 M120,20 L250,150 L280,340" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+                
+                <!-- Station 1: Sector 12 Junction (Yellow) -->
+                <circle cx="150" cy="180" r="18" class="pulse-ring" style="--marker-color: var(--color-orange);" />
+                <circle cx="150" cy="180" r="6" class="pollution-marker" style="--marker-color: var(--color-orange);" onclick="filterCleanAirMap('Sector-12 Junction')" />
+
+                <!-- Station 2: Bypass Industrial (Large Red) -->
+                <circle cx="280" cy="120" r="28" class="pulse-ring" style="--marker-color: var(--color-red);" />
+                <circle cx="280" cy="120" r="8" class="pollution-marker" style="--marker-color: var(--color-red);" onclick="filterCleanAirMap('Bypass Industrial Area')" />
+
+                <!-- Station 3: Sector-4 Market (Orange) -->
+                <circle cx="350" cy="220" r="22" class="pulse-ring" style="--marker-color: var(--color-orange);" />
+                <circle cx="350" cy="220" r="6" class="pollution-marker" style="--marker-color: var(--color-orange);" onclick="filterCleanAirMap('Sector-4 Market')" />
+
+                <!-- Station 4: East Suburbs (Green) -->
+                <circle cx="430" cy="280" r="12" class="pulse-ring" style="--marker-color: var(--color-green);" />
+                <circle cx="430" cy="280" r="5" class="pollution-marker" style="--marker-color: var(--color-green);" onclick="filterCleanAirMap('East Suburbs')" />
+
+                <!-- Station 5: Central Metro (Orange) -->
+                <circle cx="120" cy="60" r="20" class="pulse-ring" style="--marker-color: var(--color-orange);" />
+                <circle cx="120" cy="60" r="6" class="pollution-marker" style="--marker-color: var(--color-orange);" onclick="filterCleanAirMap('Central Metro Site')" />
+
+                <!-- Labels -->
+                <text x="150" y="205" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">SECTOR-12</text>
+                <text x="280" y="145" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">BYPASS IND.</text>
+                <text x="350" y="245" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">SECTOR-4 MKT</text>
+                <text x="430" y="300" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">EAST RES.</text>
+                <text x="120" y="85" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">METRO CONST.</text>
+              </svg>
+              
+              <div class="map-tooltip" id="cleanair-map-tooltip">
+                <h5 id="ca-tooltip-title">Sector Name</h5>
+                <p>Telemetry AQI: <span class="value" id="ca-tooltip-aqi">0</span></p>
+                <p>Status: <span class="value" id="ca-tooltip-status">Normal</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="trending-up" style="color: var(--color-red);"></i> AQI 24h Predictive Trend</h3>
+                <div class="card-subheader">Historical timeline vs AI progression forecasts</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="cleanairTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Citizen Evidence Grid -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="camera" style="color: var(--color-red);"></i> Citizen Video & Photo Evidence</h3>
+              <div class="card-subheader">Real-time uploads logged via public channels verified by computer vision models</div>
+            </div>
+          </div>
+          <div class="evidence-grid" id="cleanair-evidence-grid"></div>
+        </div>
+
+        <!-- Municipal Operations & Source Breakdown -->
+        <div class="grid-insights-gap">
+          <div class="glass-card gap-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="pie-chart" style="color: var(--color-red);"></i> Hotspot Source Breakdown</h3>
+                <div class="card-subheader">Particulate matter source contributions estimated by regional sensors</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="cleanairSourceChart"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-card ai-card" style="border-color: rgba(255,69,58,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="truck" style="color: var(--color-red);"></i> Municipal Response Dispatch</h3>
+                <div class="card-subheader">Live status of containment vehicles and response gear deployment</div>
+              </div>
+            </div>
+            <div class="operations-container">
+              <div class="op-list">
+                <div class="op-item">
+                  <div class="op-left">
+                    <div class="op-icon"><i data-lucide="droplet"></i></div>
+                    <div class="op-info">
+                      <h4>Mist Cannons</h4>
+                      <p>2 active, 2 standby</p>
+                    </div>
+                  </div>
+                  <span class="op-status deployed" id="op-cannon-status">Active</span>
+                </div>
+
+                <div class="op-item">
+                  <div class="op-left">
+                    <div class="op-icon"><i data-lucide="truck"></i></div>
+                    <div class="op-info">
+                      <h4>Water Tankers</h4>
+                      <p>3 active, 1 standby</p>
+                    </div>
+                  </div>
+                  <span class="op-status standby" id="op-tanker-status">Standby</span>
+                </div>
+
+                <div class="op-item">
+                  <div class="op-left">
+                    <div class="op-icon"><i data-lucide="users"></i></div>
+                    <div class="op-info">
+                      <h4>Enforcement Squad</h4>
+                      <p>1 active patrol</p>
+                    </div>
+                  </div>
+                  <span class="op-status deployed" id="op-squad-status">Active</span>
+                </div>
+              </div>
+
+              <div class="op-dispatch-box" id="ca-dispatch-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotspots Table -->
+        <div class="glass-card table-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="list-ordered" style="color: var(--color-red);"></i> Ranked Regional Hotspots</h3>
+              <div class="card-subheader">Prioritized index of active environmental violations</div>
+            </div>
+            <div class="table-actions">
+              <button class="btn-export" onclick="exportCleanAirCSV()"><i data-lucide="download"></i> Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th onclick="sortCleanAirTable('location')">Location <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortCleanAirTable('currentAqi')">AQI Value <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortCleanAirTable('mainAgent')">Primary Agent <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortCleanAirTable('source')">Source Estimator <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortCleanAirTable('confidencePct')">Detection Conf. <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th>Operations Advice</th>
+                </tr>
+              </thead>
+              <tbody id="cleanair-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 24 Hour risk timeline warnings -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="alert-triangle" style="color: var(--color-red);"></i> Next 24 Hours Risk Forecast</h3>
+              <div class="card-subheader">Predictive risk alerts mapping weather parameters against industrial runoffs</div>
+            </div>
+          </div>
+          <div class="predictive-timeline" id="ca-predictive-timeline"></div>
+        </div>
+
+      </div>
+
+      <!-- Footer Info -->
+      <footer style="padding: 24px 40px; border-top: 1px solid var(--border-cleanair); text-align: center; font-size: 11px; color: #575e75;">
+        Urban Environment Command Center &bull; Ministry of Environment &bull; &copy; 2026 Government of India
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="toast priorities-toast" id="toast">
     <div class="toast-icon">
       <i data-lucide="check"></i>
     </div>
     <div class="toast-content">
       <h5 id="toast-title">Action Registered</h5>
-      <p id="toast-desc">Resolution approved. Dispatched to Municipal Engineer.</p>
+      <p id="toast-desc">Details loaded successfully.</p>
     </div>
   </div>
 
 
-  <!-- Core JavaScript Logic -->
+  <!-- ==========================================================================
+       CORE JAVASCRIPT SYSTEM & DATABASES
+       ========================================================================== -->
   <script>
-    // Comprehensive Mock Database (12 Detailed Complaints matching Ward and category requirements)
-    const RAW_DATABASE = [
+    // ==========================================================================
+    // DATABASE 1: PEOPLE'S PRIORITIES (CONSTITUENCY GAPS)
+    // ==========================================================================
+    const PRIORITIES_DB = [
       { id: 1, title: "Severe water logging & drainage backup near Sector-4 primary school", ward: "Ward 1", category: "Drainage", urgency: "Critical", severity: 94, cost: 8.5, volume: 42, action: "Clear blockages & reconstruct drainage channels", duplicates: [
         "Water has entered the school playground since Tuesday, children can't access school.",
         "Drainage water overflowing on Sector-4 main street, strong smell.",
@@ -1791,35 +2360,10 @@
         "Doctor only comes twice a week, long queues for basic checkups.",
         "Pharmacy runs out of basic paracetamol and saline kits.",
         "Center was closed during emergency hours on Sunday."
-      ], justify: "Restores local medical trust and availability in Ward 3. Avoids minor cases flooding city hospitals.", impact: "+50% clinical availability, direct medicine access for locals." },
-      
-      { id: 9, title: "Uncollected garbage piles & open dumping ground behind central block", ward: "Ward 5", category: "Drainage", urgency: "Medium", severity: 65, cost: 4.8, volume: 22, action: "Initiate daily waste truck pickups & install safety fencing", duplicates: [
-        "Huge pile of plastic waste rotting behind the shopping complex.",
-        "Stray cattle feeding on garbage, blocking traffic on main road.",
-        "Open waste dumping is leading to mosquito breeding."
-      ], justify: "Prevents toxic runoffs and flies spreading in commercial blocks. Discourages wild cattle blockades on side lanes.", impact: "Removes 1.2 metric tons of open waste monthly, clears walkways." },
-      
-      { id: 10, title: "Low water pressure in municipal pipe outlets in south-end slums", ward: "Ward 4", category: "Water", urgency: "High", severity: 77, cost: 11.2, volume: 31, action: "Install booster pumps & lay secondary service lines", duplicates: [
-        "Water flows for only 30 minutes in the morning with very low pressure.",
-        "We have to wait hours to fill a single bucket from the common tap.",
-        "Slum area pipe tail-ends receive zero water pressure."
-      ], justify: "Equalizes utility pressure for economically weak sectors. Reduces standing queue arguments at public faucets.", impact: "Triples daily supply pressure, saves household collection time." },
-      
-      { id: 11, title: "Missing boundary wall and security gate for girls secondary school", ward: "Ward 1", category: "School", urgency: "High", severity: 81, cost: 7.5, volume: 20, action: "Construct 2.5m concrete wall with steel lock gate", duplicates: [
-        "Stray dogs enter the school premises, posing a threat to pupils.",
-        "Outsiders loiter inside the playground after school hours.",
-        "Security is weak as the back boundary wall has collapsed entirely."
-      ], justify: "Implements strict campus boundaries for student protection. Blocks external trespassing and animals.", impact: "Fully secure playground perimeter for 350 female students." },
-      
-      { id: 12, title: "Unpaved link road causing severe dust pollution and mud logging", ward: "Ward 4", category: "Roads", urgency: "Medium", severity: 62, cost: 13.5, volume: 15, action: "Lay asphalt surface & construct side drainage channels", duplicates: [
-        "Muddy slush blocks scooters during monsoons.",
-        "Heavy dust makes it hard to breathe for residents living along the dirt road.",
-        "Connection road to agricultural market is still unpaved."
-      ], justify: "Improves connection between satellite suburbs and market links. Lowers dust-related breathing issues.", impact: "+40% speed for transport of local farm goods to town." }
+      ], justify: "Restores local medical trust and availability in Ward 3. Avoids minor cases flooding city hospitals.", impact: "+50% clinical availability, direct medicine access for locals." }
     ];
 
-    // Infrastructure Benchmark Data
-    const INFRASTRUCTURE_GAP_DATA = {
+    const PRIORITIES_GAP_METRICS = {
       "Roads": { current: 68, target: 100, label: "Road Surface Integrity" },
       "Water": { current: 75, target: 100, label: "Safe Potable Drinking Supply" },
       "School": { current: 81, target: 100, label: "Modern Public Classrooms" },
@@ -1828,15 +2372,831 @@
       "Electricity": { current: 88, target: 100, label: "Grid Stability & St-Lighting" }
     };
 
-    // Global App States
-    let currentData = [...RAW_DATABASE];
-    let selectedIssueId = 1; 
-    let currentSortColumn = "severity";
-    let currentSortDirection = "desc";
-    let isHindi = false;
-    let doughnutChartInstance = null;
 
-    // Translated UI texts (EN / HI)
+    // ==========================================================================
+    // DATABASE 2: CLEANAIR & CLEAR STREETS (ENVIRONMENTAL SENSORS & ALERTS)
+    // ==========================================================================
+    const CLEANAIR_DB = [
+      { id: 101, location: "Bypass Industrial Area", currentAqi: 280, mainAgent: "SO2 & PM2.5", source: "Industrial Smoke", severityPct: 92, confidencePct: 96, reportsCount: 18, status: "Active", details: "Emissions monitored from chemical kilns exceed permissible levels. Micro-weather reports suggest localized smog pooling due to low wind speed.", recommended: "Deploy anti-smog water mist cannons, enforce factory kiln shutdown alert.", code: "AQI-280B" },
+      
+      { id: 102, location: "Sector-4 Market", currentAqi: 210, mainAgent: "PM10 & CO", source: "Garbage Burning", severityPct: 84, confidencePct: 88, reportsCount: 14, status: "Active", details: "Open garbage dumping fires reported behind municipal commercial block. Citizen photos verify burning plastics and rubber residues.", recommended: "Dispatch regional water tanker #8 to douse dump flames immediately.", code: "AQI-210S" },
+      
+      { id: 103, location: "Central Metro Site", currentAqi: 185, mainAgent: "PM10 Dust", source: "Construction Dust", severityPct: 78, confidencePct: 92, reportsCount: 9, status: "Active", details: "High-speed construction excavators running without mandatory dust filters or boundary water sprays. Strong winds scattering particles East.", recommended: "Dispatch enforcement squad, trigger water sprinkler rigs.", code: "AQI-185M" },
+      
+      { id: 104, location: "Sector-12 Junction", currentAqi: 165, mainAgent: "NO2 & PM2.5", source: "Traffic Emission", severityPct: 72, confidencePct: 90, reportsCount: 22, status: "Active", details: "Major gridlock at central bypass intersection during peak hours. Diesel truck emissions pooling near low-rise residential gates.", recommended: "Coordinate smart traffic signal cycles, deploy mist sprayer #12.", code: "AQI-165T" },
+      
+      { id: 105, location: "East Suburbs", currentAqi: 95, mainAgent: "Ozone", source: "Secondary Transport", severityPct: 45, confidencePct: 82, reportsCount: 2, status: "Resolved", details: "Slight ozone peaks during afternoon sun hours. Conditions stabilized under evening breeze.", recommended: "Enforce zero idling zone around public school gates.", code: "AQI-95E" }
+    ];
+
+    const CITIZEN_EVIDENCE = [
+      { id: 201, title: "Open waste burn behind shopping complex", location: "Sector-4 Market", time: "09:32 AM", conf: 88, details: "Plastic refuse pile set on fire, thick toxic smoke rising near food stalls.", icon: "trash-2", caDbId: 102 },
+      { id: 202, title: "Unsprayed excavation dust", location: "Central Metro Site", time: "10:14 AM", conf: 92, details: "Tractor grid dispersing dry clay dust across residential lanes. Boundary barriers missing.", icon: "shovel", caDbId: 103 },
+      { id: 203, title: "Thick black smoke from furnace", location: "Bypass Industrial Area", time: "11:05 AM", conf: 96, details: "Chimney emissions exceed opacity standards. Continuous discharge for 40 minutes.", icon: "flame", caDbId: 101 }
+    ];
+
+    const FORECAST_TIMELINE = [
+      { time: "08:00 AM", aqi: 160, risk: "Moderate", color: "var(--color-orange)" },
+      { time: "12:00 PM", aqi: 220, risk: "High Risk", color: "var(--color-red)" },
+      { time: "04:00 PM", aqi: 180, risk: "Moderate", color: "var(--color-orange)" },
+      { time: "08:00 PM", aqi: 240, risk: "Critical", color: "var(--color-red)" },
+      { time: "12:00 AM", aqi: 195, risk: "High Risk", color: "var(--color-red)" },
+      { time: "04:00 AM", aqi: 140, risk: "Standard", color: "var(--color-green)" }
+    ];
+
+
+    // ==========================================================================
+    // STATE VARIABLES
+    // ==========================================================================
+    let currentActiveDashboard = "priorities"; // 'priorities' | 'cleanair'
+
+    // Priorities variables
+    let prioritiesFilteredData = [...PRIORITIES_DB];
+    let selectedPriorityId = 1;
+    let prioritiesSortCol = "severity";
+    let prioritiesSortDir = "desc";
+    let isHindi = false;
+    let prioritiesChartInstance = null;
+
+    // CleanAir variables
+    let cleanAirFilteredData = [...CLEANAIR_DB];
+    let selectedCleanAirId = 101;
+    let cleanAirSortCol = "currentAqi";
+    let cleanAirSortDir = "desc";
+    let cleanairTrendChart = null;
+    let cleanairSourceChart = null;
+
+
+    // ==========================================================================
+    // INITIALIZATION & DUAL TOGGLE ENGINE
+    // ==========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      // Trigger default render
+      applyPrioritiesFilters();
+      
+      // Global Key listener: Ctrl + ` (Backtick) / Tilde (Backquote / ~)
+      window.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && (e.code === "Backquote" || e.key === "`" || e.key === "~")) {
+          e.preventDefault();
+          toggleDashboard();
+        }
+      });
+    });
+
+    // Dashboard Switching Controller
+    function toggleDashboard() {
+      const prioritiesWrapper = document.getElementById("dashboard-priorities-wrapper");
+      const cleanAirWrapper = document.getElementById("dashboard-cleanair-wrapper");
+
+      if (currentActiveDashboard === "priorities") {
+        // Toggle to CleanAir
+        prioritiesWrapper.style.display = "none";
+        cleanAirWrapper.style.display = "grid";
+        currentActiveDashboard = "cleanair";
+        document.title = "CleanAir & Clear Streets - Environment Command Center";
+
+        // Transition background styles and root theme variables on body
+        document.body.className = "cleanair-theme";
+        document.documentElement.style.setProperty('--theme-bg', 'var(--bg-base-cleanair)');
+        document.documentElement.style.setProperty('--theme-sidebar', 'var(--bg-sidebar-cleanair)');
+        document.documentElement.style.setProperty('--theme-surface', 'var(--bg-surface-cleanair)');
+        document.documentElement.style.setProperty('--theme-border', 'var(--border-cleanair)');
+        document.documentElement.style.setProperty('--theme-accent', 'var(--accent-cleanair)');
+        document.documentElement.style.setProperty('--theme-accent-glow', 'var(--accent-cleanair-glow)');
+        document.documentElement.style.setProperty('--theme-muted', '#575e75');
+        document.documentElement.style.setProperty('--glow-color-1', 'var(--color-red)');
+        document.documentElement.style.setProperty('--glow-color-2', 'var(--color-orange)');
+
+        applyCleanAirFilters();
+        showToast("Switched Dashboard", "Shifting to CleanAir Command Console", "cleanair");
+      } else {
+        // Toggle to Priorities
+        cleanAirWrapper.style.display = "none";
+        prioritiesWrapper.style.display = "grid";
+        currentActiveDashboard = "priorities";
+        document.title = "People's Priorities - Constituency Planning AI Dashboard";
+
+        // Transition background styles and root theme variables on body
+        document.body.className = "priorities-theme";
+        document.documentElement.style.setProperty('--theme-bg', 'var(--bg-base-priorities)');
+        document.documentElement.style.setProperty('--theme-sidebar', 'var(--bg-sidebar-priorities)');
+        document.documentElement.style.setProperty('--theme-surface', 'var(--bg-surface-priorities)');
+        document.documentElement.style.setProperty('--theme-border', 'var(--border-priorities)');
+        document.documentElement.style.setProperty('--theme-accent', 'var(--accent-priorities)');
+        document.documentElement.style.setProperty('--theme-accent-glow', 'var(--accent-priorities-glow)');
+        document.documentElement.style.setProperty('--theme-muted', '#64748b');
+        document.documentElement.style.setProperty('--glow-color-1', 'var(--color-blue)');
+        document.documentElement.style.setProperty('--glow-color-2', 'var(--color-purple)');
+
+        applyPrioritiesFilters();
+        showToast("Switched Dashboard", "Shifting to Priorities Planning Console", "priorities");
+      }
+      lucide.createIcons();
+    }
+
+
+    // ==========================================================================
+    // MODULE SYSTEM: PEOPLE'S PRIORITIES (BLUE DASHBOARD LOGIC)
+    // ==========================================================================
+    function resetPrioritiesFilters() {
+      document.getElementById("filter-ward").value = "All";
+      document.getElementById("filter-category").value = "All";
+      document.getElementById("filter-urgency").value = "All";
+      document.getElementById("search-bar-priorities").value = "";
+      applyPrioritiesFilters();
+    }
+
+    function applyPrioritiesFilters() {
+      const wardFilter = document.getElementById("filter-ward").value;
+      const catFilter = document.getElementById("filter-category").value;
+      const urgFilter = document.getElementById("filter-urgency").value;
+      const searchQuery = document.getElementById("search-bar-priorities").value.toLowerCase();
+
+      prioritiesFilteredData = PRIORITIES_DB.filter(item => {
+        if (wardFilter !== "All" && item.ward !== wardFilter) return false;
+        if (catFilter !== "All" && item.category !== catFilter) return false;
+        
+        if (urgFilter !== "All") {
+          if (urgFilter === "Critical" && item.urgency !== "Critical") return false;
+          if (urgFilter === "High" && !["Critical", "High"].includes(item.urgency)) return false;
+          if (urgFilter === "Medium" && !["Critical", "High", "Medium"].includes(item.urgency)) return false;
+          if (urgFilter === "Low" && item.urgency !== "Low") return false;
+        }
+
+        if (searchQuery) {
+          const matchTitle = item.title.toLowerCase().includes(searchQuery);
+          const matchAction = item.action.toLowerCase().includes(searchQuery);
+          if (!matchTitle && !matchAction) return false;
+        }
+
+        return true;
+      });
+
+      // Selection synchronization
+      if (prioritiesFilteredData.length > 0) {
+        if (!prioritiesFilteredData.some(item => item.id === selectedPriorityId)) {
+          selectedPriorityId = prioritiesFilteredData[0].id;
+        }
+      } else {
+        selectedPriorityId = null;
+      }
+
+      // Sync map color tags
+      updatePrioritiesMapOutlines(wardFilter);
+
+      // Render view pieces
+      renderPrioritiesKPIs();
+      renderPrioritiesUrgentInterventions();
+      renderPrioritiesClusteringPanel();
+      renderPrioritiesTable();
+      renderPrioritiesGapAnalysis();
+      renderPrioritiesAIRecommendation();
+      updatePrioritiesSectorChart();
+    }
+
+    function updatePrioritiesMapOutlines(activeWard) {
+      document.querySelectorAll("#dashboard-priorities-wrapper .ward-path").forEach(path => {
+        const ward = path.getAttribute("data-ward");
+        path.classList.remove("active-filter");
+        
+        if (activeWard !== "All" && ward === activeWard) {
+          path.classList.add("active-filter");
+        }
+
+        const wardIssues = PRIORITIES_DB.filter(item => item.ward === ward);
+        if (wardIssues.some(item => item.urgency === "Critical")) {
+          path.classList.add("urgency-critical");
+        } else {
+          path.classList.remove("urgency-critical");
+        }
+      });
+    }
+
+    // SVG Ward click filter in Priorities map
+    document.querySelectorAll("#dashboard-priorities-wrapper .ward-path").forEach(path => {
+      const wardName = path.getAttribute("data-ward");
+      const tooltip = document.getElementById("map-tooltip");
+
+      path.addEventListener("mouseenter", () => {
+        const issues = PRIORITIES_DB.filter(i => i.ward === wardName);
+        const vol = issues.reduce((sum, curr) => sum + curr.volume, 0);
+        const avgSev = issues.length > 0 ? Math.round(issues.reduce((s, c) => s + c.severity, 0) / issues.length) : 0;
+        
+        document.getElementById("tooltip-title").innerText = wardName.toUpperCase();
+        document.getElementById("tooltip-total").innerText = vol;
+        document.getElementById("tooltip-severity").innerText = `${avgSev}%`;
+        tooltip.style.opacity = "1";
+      });
+
+      path.addEventListener("mousemove", (e) => {
+        const wrapper = document.querySelector(".map-wrapper");
+        const rect = wrapper.getBoundingClientRect();
+        tooltip.style.left = `${e.clientX - rect.left + 15}px`;
+        tooltip.style.top = `${e.clientY - rect.top + 15}px`;
+      });
+
+      path.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = "0";
+      });
+
+      path.addEventListener("click", () => {
+        const selector = document.getElementById("filter-ward");
+        selector.value = selector.value === wardName ? "All" : wardName;
+        applyPrioritiesFilters();
+      });
+    });
+
+    function renderPrioritiesKPIs() {
+      const totalReq = prioritiesFilteredData.reduce((sum, item) => sum + item.volume, 0);
+      document.getElementById("kpi-total-requests").innerText = totalReq.toLocaleString();
+      document.getElementById("kpi-unique-clusters").innerText = prioritiesFilteredData.length;
+      
+      const criticalCount = prioritiesFilteredData.filter(item => ["Critical", "High"].includes(item.urgency)).length;
+      document.getElementById("kpi-high-priority").innerText = criticalCount;
+
+      const coverageRate = prioritiesFilteredData.length > 0 
+        ? (85 + (prioritiesFilteredData.filter(item => item.severity < 80).length / prioritiesFilteredData.length) * 10).toFixed(1)
+        : "100.0";
+      document.getElementById("kpi-coverage").innerText = `${coverageRate}%`;
+    }
+
+    function renderPrioritiesUrgentInterventions() {
+      const container = document.getElementById("interventions-list");
+      container.innerHTML = "";
+
+      const sorted = [...PRIORITIES_DB].sort((a,b) => b.severity - a.severity).slice(0, 5);
+      sorted.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = `intervention-item ${item.id === selectedPriorityId ? 'focused' : ''}`;
+        div.onclick = () => selectPrioritiesRow(item.id);
+
+        div.innerHTML = `
+          <div class="int-left">
+            <span class="int-rank">#${idx + 1}</span>
+            <div class="int-details">
+              <h4>${item.title}</h4>
+              <p>${item.ward} &bull; ${item.category}</p>
+            </div>
+          </div>
+          <div class="int-right">
+            <span class="int-severity">${item.severity}% Sev</span>
+            <p class="int-cost">₹ ${item.cost} L</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderPrioritiesClusteringPanel() {
+      const container = document.getElementById("cluster-list");
+      container.innerHTML = "";
+
+      PRIORITIES_DB.forEach(item => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "cluster-item";
+        itemDiv.setAttribute("data-id", item.id);
+
+        let quotesHTML = "";
+        item.duplicates.forEach(q => {
+          quotesHTML += `<div class="citizen-quote">"${q}"</div>`;
+        });
+
+        itemDiv.innerHTML = `
+          <div class="cluster-header" onclick="togglePrioritiesCluster(this)">
+            <h4>${item.title}</h4>
+            <div class="cluster-meta">
+              <span class="cluster-count">${item.duplicates.length + 1} Merged</span>
+              <i data-lucide="chevron-down" class="cluster-arrow" style="width:14px; height:14px;"></i>
+            </div>
+          </div>
+          <div class="cluster-body">
+            <p class="cluster-summary"><strong>AI Context Aggregator:</strong> Merged complaints cluster localized reports regarding this ${item.category.toLowerCase()} concern in ${item.ward}. Direct action will resolve all duplicates instantly.</p>
+            <div class="quotes-title">Citizen Feedback Logs</div>
+            <div class="citizen-quotes">
+              ${quotesHTML}
+            </div>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      lucide.createIcons();
+    }
+
+    function togglePrioritiesCluster(header) {
+      const item = header.parentElement;
+      const body = item.querySelector(".cluster-body");
+      const isExpanded = item.classList.contains("expanded");
+
+      document.querySelectorAll("#dashboard-priorities-wrapper .cluster-item").forEach(c => {
+        c.classList.remove("expanded");
+        c.querySelector(".cluster-body").style.display = "none";
+      });
+
+      if (!isExpanded) {
+        item.classList.add("expanded");
+        body.style.display = "block";
+        const id = parseInt(item.getAttribute("data-id"));
+        selectPrioritiesRow(id);
+      }
+    }
+
+    function updatePrioritiesSectorChart() {
+      const categories = ["Roads", "Water", "School", "Health", "Drainage", "Electricity"];
+      const counts = categories.map(cat => {
+        return prioritiesFilteredData.filter(d => d.category === cat).reduce((sum, curr) => sum + curr.volume, 0);
+      });
+
+      if (prioritiesChartInstance) {
+        prioritiesChartInstance.data.datasets[0].data = counts;
+        prioritiesChartInstance.update();
+      } else {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        prioritiesChartInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: categories,
+            datasets: [{
+              data: counts,
+              backgroundColor: ['#0071e3', '#30d158', '#bf5af2', '#ff9f0a', '#ff453a', '#64d2ff'],
+              borderWidth: 1,
+              borderColor: '#0b0f19'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: '#cbd5e1',
+                  font: { family: 'Inter', size: 10, weight: 600 },
+                  boxWidth: 10,
+                  padding: 12
+                }
+              }
+            },
+            cutout: '72%'
+          }
+        });
+      }
+    }
+
+    function renderPrioritiesTable() {
+      const tbody = document.getElementById("ranking-table-body");
+      tbody.innerHTML = "";
+
+      if (prioritiesFilteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#64748b;">No records found matching filters.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...prioritiesFilteredData].sort((a,b) => {
+        let valA = a[prioritiesSortCol];
+        let valB = b[prioritiesSortCol];
+        return prioritiesSortDir === 'desc' ? valB - valA : valA - valB;
+      });
+
+      sorted.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.className = item.id === selectedPriorityId ? "selected" : "";
+        tr.onclick = () => selectPrioritiesRow(item.id);
+
+        tr.innerHTML = `
+          <td style="font-weight:600; color:#fff;">${item.title}</td>
+          <td>${item.ward}</td>
+          <td>${item.volume}</td>
+          <td><span class="badge-urgency badge-${item.urgency.toLowerCase()}">${item.urgency} (${item.severity}%)</span></td>
+          <td style="font-weight:700;">₹ ${item.cost} L</td>
+          <td style="font-size:12px;">${item.action}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Interactive Sorting Priorities Table
+    function sortPrioritiesTable(col) {
+      if (prioritiesSortCol === col) {
+        prioritiesSortDir = prioritiesSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        prioritiesSortCol = col;
+        prioritiesSortDir = 'desc';
+      }
+      renderPrioritiesTable();
+    }
+
+    function selectPrioritiesRow(id) {
+      selectedPriorityId = id;
+      renderPrioritiesTable();
+      renderPrioritiesUrgentInterventions();
+      renderPrioritiesAIRecommendation();
+    }
+
+    function renderPrioritiesGapAnalysis() {
+      const container = document.getElementById("gap-bars-list");
+      container.innerHTML = "";
+
+      Object.entries(PRIORITIES_GAP_METRICS).forEach(([sec, data]) => {
+        const currentPct = data.current;
+        const missingPct = data.target - currentPct;
+
+        const bar = document.createElement("div");
+        bar.className = "gap-bar-item";
+        bar.innerHTML = `
+          <div class="gap-header">
+            <span>${sec} (${data.label})</span>
+            <span class="pct-label">${currentPct}% Supply &bull; <span style="color:var(--color-red); font-weight:700;">${missingPct}% Gap</span></span>
+          </div>
+          <div class="gap-progress-track">
+            <div class="gap-fill-primary" style="width: ${currentPct}%;"></div>
+            <div class="gap-fill-missing" style="left: ${currentPct}%; width: ${missingPct}%;"></div>
+          </div>
+        `;
+        container.appendChild(bar);
+      });
+    }
+
+    function renderPrioritiesAIRecommendation() {
+      const container = document.getElementById("ai-rec-box");
+      container.innerHTML = "";
+
+      const activeItem = PRIORITIES_DB.find(item => item.id === selectedPriorityId);
+      if (!activeItem) return;
+
+      container.innerHTML = `
+        <div class="ai-rec-header">
+          <span class="ai-badge">AI Assistant</span>
+          <div class="confidence-gauge">
+            <span>AI CONFIDENCE SCORE:</span>
+            <span style="color: var(--color-blue);">${activeItem.severity + 3}%</span>
+          </div>
+        </div>
+        <div class="rec-body">
+          <h4 style="color:#fff;">${activeItem.title}</h4>
+          <p style="margin-top:6px;"><strong>WHY THIS WORK IS IMPORTANT:</strong> ${activeItem.justify}</p>
+        </div>
+        <div class="rec-impact-grid">
+          <div class="impact-item">
+            <h5>ESTIMATED CONSTITUENCY IMPACT</h5>
+            <p>${activeItem.impact}</p>
+          </div>
+          <div class="impact-item">
+            <h5>Cost vs Allocation</h5>
+            <p>Budget Needed: ₹ ${activeItem.cost} Lakhs</p>
+          </div>
+        </div>
+        <div class="rec-next-action">
+          <h5>RECOMMENDED NEXT ACTION</h5>
+          <p>Execute: ${activeItem.action} (Budget Code: WP-${activeItem.id}0${activeItem.severity})</p>
+        </div>
+        <div class="rec-buttons">
+          <button class="btn-approve" onclick="approvePriority(${activeItem.id})">
+            <i data-lucide="check"></i> Approve Funding & Dispatch
+          </button>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function approvePriority(itemId) {
+      const item = PRIORITIES_DB.find(i => i.id === itemId);
+      showToast("Tender Approved", `Dispatched allocation of ₹ ${item.cost} Lakhs for ${item.category}`, "priorities");
+    }
+
+    function exportCSV() {
+      const headers = ["ID", "Issue Title", "Ward", "Category", "Urgency", "AI Severity (%)", "Est Cost (L)"];
+      const rows = prioritiesFilteredData.map(item => [item.id, `"${item.title}"`, item.ward, item.category, item.urgency, item.severity, item.cost]);
+      const csv = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Constituency_Priorities_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+
+    // ==========================================================================
+    // MODULE SYSTEM: CLEANAIR & CLEAR STREETS (RED COMMAND CENTER LOGIC)
+    // ==========================================================================
+    function resetCleanAirFilters() {
+      document.getElementById("filter-zone").value = "All";
+      document.getElementById("filter-pollutant").value = "All";
+      document.getElementById("filter-severity-level").value = "All";
+      document.getElementById("search-bar-cleanair").value = "";
+      applyCleanAirFilters();
+    }
+
+    function applyCleanAirFilters() {
+      const zoneFilter = document.getElementById("filter-zone").value;
+      const pollutantFilter = document.getElementById("filter-pollutant").value;
+      const alarmFilter = document.getElementById("filter-severity-level").value;
+      const searchQuery = document.getElementById("search-bar-cleanair").value.toLowerCase();
+
+      cleanAirFilteredData = CLEANAIR_DB.filter(item => {
+        if (zoneFilter !== "All" && item.location !== zoneFilter) return false;
+        if (pollutantFilter !== "All" && !item.mainAgent.includes(pollutantFilter)) return false;
+        
+        if (alarmFilter !== "All") {
+          if (alarmFilter === "Critical" && item.currentAqi < 200) return false;
+          if (alarmFilter === "High" && item.currentAqi < 150) return false;
+          if (alarmFilter === "Moderate" && item.currentAqi >= 150) return false;
+        }
+
+        if (searchQuery && !item.location.toLowerCase().includes(searchQuery)) return false;
+
+        return true;
+      });
+
+      // Synchronize selection
+      if (cleanAirFilteredData.length > 0) {
+        if (!cleanAirFilteredData.some(item => item.id === selectedCleanAirId)) {
+          selectedCleanAirId = cleanAirFilteredData[0].id;
+        }
+      } else {
+        selectedCleanAirId = null;
+      }
+
+      renderCleanAirKPIs();
+      renderCleanAirEvidenceGrid();
+      renderCleanAirTable();
+      renderCleanAirTimeline();
+      renderCleanAirDispatchRecommendation();
+      updateCleanAirCharts();
+    }
+
+    // Filter map markers click callback
+    function filterCleanAirMap(location) {
+      const filterSelect = document.getElementById("filter-zone");
+      filterSelect.value = filterSelect.value === location ? "All" : location;
+      applyCleanAirFilters();
+    }
+
+    // Map tooltips on cleanair
+    const cleanairPaths = document.querySelectorAll(".pollution-marker");
+    const caTooltip = document.getElementById("cleanair-map-tooltip");
+
+    cleanairPaths.forEach(path => {
+      path.addEventListener("mouseenter", (e) => {
+        const cx = parseFloat(path.getAttribute("cx"));
+        let loc = "Sector-12 Junction";
+        if (cx === 280) loc = "Bypass Industrial Area";
+        if (cx === 350) loc = "Sector-4 Market";
+        if (cx === 430) loc = "East Suburbs";
+        if (cx === 120) loc = "Central Metro Site";
+
+        const stats = CLEANAIR_DB.find(d => d.location === loc);
+        if (stats) {
+          document.getElementById("ca-tooltip-title").innerText = stats.location;
+          document.getElementById("ca-tooltip-aqi").innerText = stats.currentAqi;
+          document.getElementById("ca-tooltip-status").innerText = stats.currentAqi > 200 ? "CRITICAL" : "ALERT";
+          caTooltip.style.opacity = "1";
+        }
+      });
+
+      path.addEventListener("mousemove", (e) => {
+        const container = document.querySelector(".satellite-map-container");
+        const rect = container.getBoundingClientRect();
+        caTooltip.style.left = `${e.clientX - rect.left + 15}px`;
+        caTooltip.style.top = `${e.clientY - rect.top + 15}px`;
+      });
+
+      path.addEventListener("mouseleave", () => {
+        caTooltip.style.opacity = "0";
+      });
+    });
+
+    function renderCleanAirKPIs() {
+      const avgAqi = Math.round(cleanAirFilteredData.reduce((sum, i) => sum + i.currentAqi, 0) / (cleanAirFilteredData.length || 1));
+      document.getElementById("cleanair-kpi-aqi").innerText = avgAqi;
+      document.getElementById("cleanair-kpi-hotspots").innerText = cleanAirFilteredData.length;
+      
+      const smokeCount = cleanAirFilteredData.reduce((sum, i) => sum + i.reportsCount, 0);
+      document.getElementById("cleanair-kpi-smoke").innerText = smokeCount;
+
+      const riskCount = cleanAirFilteredData.filter(i => i.currentAqi >= 180).length;
+      document.getElementById("cleanair-kpi-risk").innerText = riskCount;
+    }
+
+    function renderCleanAirEvidenceGrid() {
+      const container = document.getElementById("cleanair-evidence-grid");
+      container.innerHTML = "";
+
+      CITIZEN_EVIDENCE.forEach(item => {
+        const div = document.createElement("div");
+        div.className = `evidence-card ${item.caDbId === selectedCleanAirId ? 'selected' : ''}`;
+        div.onclick = () => selectCleanAirRow(item.caDbId);
+
+        div.innerHTML = `
+          <div class="evidence-photo-mock">
+            <i data-lucide="${item.icon}" style="width:36px; height:36px;"></i>
+            <span class="evidence-tag">${item.location}</span>
+          </div>
+          <div class="evidence-body">
+            <h4>${item.title}</h4>
+            <p style="font-size:11px; color:#94a3b8; line-height:1.4;">${item.details}</p>
+            <div class="evidence-meta" style="margin-top:6px;">
+              <span>Time: ${item.time}</span>
+              <span style="color:var(--color-red); font-weight:700;">${item.conf}% Conf</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function renderCleanAirTable() {
+      const tbody = document.getElementById("cleanair-table-body");
+      tbody.innerHTML = "";
+
+      if (cleanAirFilteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#575e75;">No sensor grids found.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...cleanAirFilteredData].sort((a,b) => {
+        let valA = a[cleanAirSortCol];
+        let valB = b[cleanAirSortCol];
+        return cleanAirSortDir === 'desc' ? valB - valA : valA - valB;
+      });
+
+      sorted.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.className = item.id === selectedCleanAirId ? "selected" : "";
+        tr.onclick = () => selectCleanAirRow(item.id);
+
+        const badgeClass = item.currentAqi >= 200 ? 'badge-critical' : (item.currentAqi >= 150 ? 'badge-high' : 'badge-medium');
+
+        tr.innerHTML = `
+          <td style="font-weight:600; color:#fff;">${item.location}</td>
+          <td><span class="badge-urgency ${badgeClass}">${item.currentAqi} AQI</span></td>
+          <td>${item.mainAgent}</td>
+          <td>${item.source}</td>
+          <td style="font-weight:700;">${item.confidencePct}% Verified</td>
+          <td style="font-size:12px;">${item.recommended}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortCleanAirTable(col) {
+      if (cleanAirSortCol === col) {
+        cleanAirSortDir = cleanAirSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        cleanAirSortCol = col;
+        cleanAirSortDir = 'desc';
+      }
+      renderCleanAirTable();
+    }
+
+    function selectCleanAirRow(id) {
+      selectedCleanAirId = id;
+      renderCleanAirTable();
+      renderCleanAirEvidenceGrid();
+      renderCleanAirDispatchRecommendation();
+    }
+
+    function renderCleanAirTimeline() {
+      const container = document.getElementById("ca-predictive-timeline");
+      container.innerHTML = "";
+
+      FORECAST_TIMELINE.forEach(hour => {
+        const card = document.createElement("div");
+        card.className = "timeline-hour-card";
+
+        card.innerHTML = `
+          <span class="tl-hour">${hour.time}</span>
+          <span class="tl-aqi">${hour.aqi} AQI</span>
+          <div class="tl-indicator" style="background-color: ${hour.color};"></div>
+          <span style="font-size:9px; color:#cbd5e1; font-weight:700;">${hour.risk}</span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderCleanAirDispatchRecommendation() {
+      const container = document.getElementById("ca-dispatch-box");
+      container.innerHTML = "";
+
+      const activeItem = CLEANAIR_DB.find(item => item.id === selectedCleanAirId);
+      if (!activeItem) return;
+
+      container.innerHTML = `
+        <h4 style="color:#fff; font-size:13px;"><i data-lucide="shield-alert" style="width:16px; display:inline-block; vertical-align:middle; color:var(--color-red);"></i> Dispatch Recommendation</h4>
+        <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin-top:6px;">
+          Sensor Grid ${activeItem.code} detected high particulate concentrations from <strong>${activeItem.source}</strong>. Action recommendation matches active municipal frameworks.
+        </p>
+        <div style="background:rgba(0,0,0,0.2); padding:10px 12px; border-radius:6px; font-size:11px; margin-top:6px;">
+          <span style="color:var(--color-red); font-weight:700;">AI TARGET DEVICE:</span><br/>
+          ${activeItem.recommended}
+        </div>
+        <button class="btn-approve" onclick="dispatchCleanAirOps(${activeItem.id})">
+          <i data-lucide="send"></i> Deploy Containment Team
+        </button>
+      `;
+      lucide.createIcons();
+    }
+
+    function dispatchCleanAirOps(itemId) {
+      const item = CLEANAIR_DB.find(i => i.id === itemId);
+      
+      if (item.source === "Garbage Burning") {
+        document.getElementById("op-tanker-status").innerText = "Active";
+        document.getElementById("op-tanker-status").className = "op-status deployed";
+      } else if (item.source === "Construction Dust" || item.source === "Industrial Smoke") {
+        document.getElementById("op-cannon-status").innerText = "Active";
+        document.getElementById("op-cannon-status").className = "op-status deployed";
+      }
+
+      showToast("Crews Deployed", `Mist Cannons & Containment dispatched to ${item.location}`, "cleanair");
+    }
+
+    function updateCleanAirCharts() {
+      const hoursLabels = ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00"];
+      const aqiHistoricalForecast = [150, 165, 220, 210, 175, 185, 240, 210, 195];
+
+      if (cleanairTrendChart) {
+        cleanairTrendChart.update();
+      } else {
+        const ctx = document.getElementById('cleanairTrendChart').getContext('2d');
+        cleanairTrendChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: hoursLabels,
+            datasets: [{
+              label: 'AQI Level',
+              data: aqiHistoricalForecast,
+              borderColor: '#ff453a',
+              backgroundColor: 'rgba(255, 69, 58, 0.08)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#64748b', font: { size: 9 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+            }
+          }
+        });
+      }
+
+      const sources = ["Traffic", "Construction Dust", "Garbage Burning", "Industrial Smoke"];
+      const sourceVals = [35, 25, 20, 20]; // default percentages
+
+      if (cleanairSourceChart) {
+        cleanairSourceChart.update();
+      } else {
+        const ctx2 = document.getElementById('cleanairSourceChart').getContext('2d');
+        cleanairSourceChart = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: sources,
+            datasets: [{
+              data: sourceVals,
+              backgroundColor: ['#64d2ff', '#ff9f0a', '#ff453a', '#bf5af2'],
+              borderWidth: 0,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+              y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10, weight: 600 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function exportCleanAirCSV() {
+      const headers = ["Location", "AQI", "Primary Pollutant", "Source", "Confidence (%)"];
+      const rows = cleanAirFilteredData.map(item => [item.location, item.currentAqi, item.mainAgent, item.source, item.confidencePct]);
+      const csv = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `CleanAir_Hotspots_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+
+    // ==========================================================================
+    // TRANSLATIONS SYSTEM (EN / HI)
+    // ==========================================================================
     const TRANSLATIONS = {
       EN: {
         logoTitle: "Priority AI",
@@ -1966,19 +3326,11 @@
       }
     };
 
-    // Initialize Page
-    window.addEventListener("DOMContentLoaded", () => {
-      applyFilters();
-      setupMapInteractivity();
-    });
-
-    // Language Toggle Trigger
     function toggleLanguage() {
       isHindi = !isHindi;
       const lang = isHindi ? "HI" : "EN";
       document.getElementById("lang-btn").innerText = isHindi ? "EN" : "HI";
       
-      // Update DOM labels using translation dictionary
       document.getElementById("txt-logo-title").innerText = TRANSLATIONS[lang].logoTitle;
       document.getElementById("txt-logo-sub").innerText = TRANSLATIONS[lang].logoSub;
       document.getElementById("txt-nav-label").innerText = TRANSLATIONS[lang].navLabel;
@@ -1989,624 +3341,39 @@
       document.getElementById("txt-nav-gap").innerText = TRANSLATIONS[lang].navGap;
       document.getElementById("txt-nav-ai").innerText = TRANSLATIONS[lang].navAi;
       
-      document.getElementById("txt-filter-label").innerText = TRANSLATIONS[lang].filterLabel;
-      document.getElementById("lbl-filter-ward").innerText = TRANSLATIONS[lang].filterWard;
-      document.getElementById("lbl-filter-category").innerText = TRANSLATIONS[lang].filterCategory;
-      document.getElementById("lbl-filter-urgency").innerText = TRANSLATIONS[lang].filterUrgency;
-      document.getElementById("txt-reset-filters").innerText = TRANSLATIONS[lang].resetFilters;
-      
       document.getElementById("txt-profile-name").innerText = TRANSLATIONS[lang].profileName;
       document.getElementById("txt-profile-role").innerText = TRANSLATIONS[lang].profileRole;
       
-      document.getElementById("lbl-kpi-1").innerText = TRANSLATIONS[lang].kpi1;
-      document.getElementById("lbl-kpi-2").innerText = TRANSLATIONS[lang].kpi2;
-      document.getElementById("lbl-kpi-3").innerText = TRANSLATIONS[lang].kpi3;
-      document.getElementById("lbl-kpi-4").innerText = TRANSLATIONS[lang].kpi4;
-      document.getElementById("lbl-kpi-5").innerText = TRANSLATIONS[lang].kpi5;
+      document.getElementById("kpi-total-requests").previousElementSibling.innerText = TRANSLATIONS[lang].kpi1;
+      document.getElementById("kpi-unique-clusters").previousElementSibling.innerText = TRANSLATIONS[lang].kpi2;
+      document.getElementById("kpi-high-priority").previousElementSibling.innerText = TRANSLATIONS[lang].kpi3;
+      document.getElementById("kpi-hotspot-ward").previousElementSibling.innerText = TRANSLATIONS[lang].kpi4;
+      document.getElementById("kpi-coverage").previousElementSibling.innerText = TRANSLATIONS[lang].kpi5;
       
-      document.getElementById("kpi-trend-mo").innerText = TRANSLATIONS[lang].kpiTrendMo;
-      document.getElementById("kpi-urgent-desc").innerText = TRANSLATIONS[lang].kpiUrgentDesc;
-      document.getElementById("kpi-hotspot-desc").innerText = TRANSLATIONS[lang].kpiHotspotDesc;
-      document.getElementById("kpi-coverage-desc").innerText = TRANSLATIONS[lang].kpiCoverageDesc;
-      
-      document.getElementById("txt-map-title").innerHTML = `<i data-lucide="map"></i> ${TRANSLATIONS[lang].mapTitle}`;
-      document.getElementById("txt-map-sub").innerText = TRANSLATIONS[lang].mapSub;
-      document.getElementById("txt-legend-high").innerText = TRANSLATIONS[lang].legendHigh;
-      document.getElementById("txt-legend-low").innerText = TRANSLATIONS[lang].legendLow;
-      
-      document.getElementById("txt-tooltip-total").innerText = TRANSLATIONS[lang].tooltipTotal;
-      document.getElementById("txt-tooltip-major").innerText = TRANSLATIONS[lang].tooltipMajor;
-      document.getElementById("txt-tooltip-severity").innerText = TRANSLATIONS[lang].tooltipSeverity;
-      
-      document.getElementById("txt-chart-title").innerHTML = `<i data-lucide="pie-chart"></i> ${TRANSLATIONS[lang].chartTitle}`;
-      document.getElementById("txt-chart-sub").innerText = TRANSLATIONS[lang].chartSub;
-      
-      document.getElementById("txt-int-title").innerHTML = `<i data-lucide="zap"></i> ${TRANSLATIONS[lang].intTitle}`;
-      document.getElementById("txt-int-sub").innerText = TRANSLATIONS[lang].intSub;
-      
-      document.getElementById("txt-cluster-title").innerHTML = `<i data-lucide="layers"></i> ${TRANSLATIONS[lang].clusterTitle}`;
-      document.getElementById("txt-cluster-sub").innerText = TRANSLATIONS[lang].clusterSub;
-      
-      document.getElementById("txt-table-title").innerHTML = `<i data-lucide="list-ordered"></i> ${TRANSLATIONS[lang].tableTitle}`;
-      document.getElementById("txt-table-sub").innerText = TRANSLATIONS[lang].tableSub;
-      
-      document.getElementById("th-title").innerHTML = `${TRANSLATIONS[lang].thTitle} <i data-lucide="chevrons-up-down" style="width:12px;"></i>`;
-      document.getElementById("th-ward").innerHTML = `${TRANSLATIONS[lang].thWard} <i data-lucide="chevrons-up-down" style="width:12px;"></i>`;
-      document.getElementById("th-requests").innerHTML = `${TRANSLATIONS[lang].thRequests} <i data-lucide="chevrons-up-down" style="width:12px;"></i>`;
-      document.getElementById("th-severity").innerHTML = `${TRANSLATIONS[lang].thSeverity} <i data-lucide="chevrons-up-down" style="width:12px;"></i>`;
-      document.getElementById("th-cost").innerHTML = `${TRANSLATIONS[lang].thCost} <i data-lucide="chevrons-up-down" style="width:12px;"></i>`;
-      document.getElementById("th-action").innerText = TRANSLATIONS[lang].thAction;
-      
-      document.getElementById("txt-gap-title").innerHTML = `<i data-lucide="git-pull-request"></i> ${TRANSLATIONS[lang].gapTitle}`;
-      document.getElementById("txt-gap-sub").innerText = TRANSLATIONS[lang].gapSub;
-      
-      document.getElementById("txt-ai-title").innerHTML = `<i data-lucide="cpu"></i> ${TRANSLATIONS[lang].aiTitle}`;
-      document.getElementById("txt-ai-sub").innerText = TRANSLATIONS[lang].aiSub;
-      
-      document.getElementById("toast-title").innerText = TRANSLATIONS[lang].toastTitle;
-      document.getElementById("toast-desc").innerText = TRANSLATIONS[lang].toastDesc;
-      
-      // Update Dropdowns
       document.getElementById("opt-all-wards").innerText = TRANSLATIONS[lang].allWards;
       document.getElementById("opt-all-cats").innerText = TRANSLATIONS[lang].allCats;
       document.getElementById("opt-all-urg").innerText = TRANSLATIONS[lang].allUrgency;
 
-      lucide.createIcons();
-      renderAllComponents();
+      applyPrioritiesFilters();
     }
 
-    // Toggle Left Menu active highlights
-    function setNavActive(elem) {
-      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
-      elem.classList.add("active");
-    }
-
-    // Reset All Filters
-    function resetFilters() {
-      document.getElementById("filter-ward").value = "All";
-      document.getElementById("filter-category").value = "All";
-      document.getElementById("filter-urgency").value = "All";
-      document.getElementById("search-bar").value = "";
-      applyFilters();
-    }
-
-    // Apply Filter constraints on dataset
-    function applyFilters() {
-      const wardFilter = document.getElementById("filter-ward").value;
-      const catFilter = document.getElementById("filter-category").value;
-      const urgFilter = document.getElementById("filter-urgency").value;
-      const searchQuery = document.getElementById("search-bar").value.toLowerCase();
-      const timeframeDays = parseInt(document.getElementById("filter-time").value);
-
-      currentData = RAW_DATABASE.filter(item => {
-        // 1. Ward match
-        if (wardFilter !== "All" && item.ward !== wardFilter) return false;
-        
-        // 2. Category match
-        if (catFilter !== "All" && item.category !== catFilter) return false;
-        
-        // 3. Urgency matches
-        if (urgFilter !== "All") {
-          if (urgFilter === "Critical" && item.urgency !== "Critical") return false;
-          if (urgFilter === "High" && !["Critical", "High"].includes(item.urgency)) return false;
-          if (urgFilter === "Medium" && !["Critical", "High", "Medium"].includes(item.urgency)) return false;
-          if (urgFilter === "Low" && item.urgency !== "Low") return false;
-        }
-
-        // 4. Search text matches
-        if (searchQuery) {
-          const matchTitle = item.title.toLowerCase().includes(searchQuery);
-          const matchAction = item.action.toLowerCase().includes(searchQuery);
-          if (!matchTitle && !matchAction) return false;
-        }
-
-        return true;
-      });
-
-      // Maintain selection context if possible, otherwise reset to first element in filter
-      if (currentData.length > 0) {
-        const matchesActive = currentData.some(item => item.id === selectedIssueId);
-        if (!matchesActive) {
-          selectedIssueId = currentData[0].id;
-        }
-      } else {
-        selectedIssueId = null;
-      }
-
-      // Synchronize map outlines to show selected active filter
-      updateMapColorsAndFilters(wardFilter);
-
-      // Re-render UI pieces
-      renderAllComponents();
-    }
-
-    // Call individual rendering algorithms
-    function renderAllComponents() {
-      renderKPIs();
-      renderUrgentInterventions();
-      renderClusteringPanel();
-      renderTable();
-      renderGapAnalysis();
-      renderAIRecommendation();
-      updateSectorDoughnutChart();
-    }
-
-    // Render KPIs metrics row
-    function renderKPIs() {
-      const totalReq = currentData.reduce((sum, item) => sum + item.volume, 0);
-      document.getElementById("kpi-total-requests").innerText = totalReq.toLocaleString();
-      document.getElementById("kpi-unique-clusters").innerText = currentData.length;
-      
-      const criticalCount = currentData.filter(item => ["Critical", "High"].includes(item.urgency)).length;
-      document.getElementById("kpi-high-priority").innerText = criticalCount;
-
-      // Identify Ward with highest volume of requests
-      const wardVolume = {};
-      RAW_DATABASE.forEach(item => {
-        wardVolume[item.ward] = (wardVolume[item.ward] || 0) + item.volume;
-      });
-      let hotspot = "None";
-      let maxVal = -1;
-      Object.entries(wardVolume).forEach(([w, vol]) => {
-        if (vol > maxVal) {
-          maxVal = vol;
-          hotspot = w;
-        }
-      });
-      document.getElementById("kpi-hotspot-ward").innerText = hotspot;
-
-      // Dynamic calculation for coverage
-      const coverageRate = currentData.length > 0 
-        ? (85 + (currentData.filter(item => item.severity < 80).length / currentData.length) * 10).toFixed(1)
-        : "100.0";
-      document.getElementById("kpi-coverage").innerText = `${coverageRate}%`;
-    }
-
-    // Setup map event listeners
-    function setupMapInteractivity() {
-      const tooltip = document.getElementById("map-tooltip");
-      const paths = document.querySelectorAll(".ward-path");
-
-      paths.forEach(path => {
-        const wardName = path.getAttribute("data-ward");
-
-        // Hover Tooltip logic
-        path.addEventListener("mouseenter", (e) => {
-          const wardIssues = RAW_DATABASE.filter(item => item.ward === wardName);
-          const totalVol = wardIssues.reduce((sum, curr) => sum + curr.volume, 0);
-          
-          // Determine major sector
-          const sectors = {};
-          wardIssues.forEach(item => sectors[item.category] = (sectors[item.category] || 0) + item.volume);
-          let majorSec = "None";
-          let maxSec = -1;
-          Object.entries(sectors).forEach(([sec, val]) => {
-            if (val > maxSec) { maxSec = val; majorSec = sec; }
-          });
-
-          // Calculate average severity
-          const avgSev = wardIssues.length > 0
-            ? Math.round(wardIssues.reduce((sum, curr) => sum + curr.severity, 0) / wardIssues.length)
-            : 0;
-
-          document.getElementById("tooltip-title").innerText = wardName.toUpperCase();
-          document.getElementById("tooltip-total").innerText = totalVol;
-          document.getElementById("tooltip-major").innerText = majorSec;
-          document.getElementById("tooltip-severity").innerText = `${avgSev}%`;
-
-          tooltip.style.opacity = "1";
-        });
-
-        path.addEventListener("mousemove", (e) => {
-          // Adjust absolute tooltip positions
-          const wrapper = document.querySelector(".map-wrapper");
-          const rect = wrapper.getBoundingClientRect();
-          const x = e.clientX - rect.left + 15;
-          const y = e.clientY - rect.top + 15;
-          
-          tooltip.style.left = `${x}px`;
-          tooltip.style.top = `${y}px`;
-        });
-
-        path.addEventListener("mouseleave", () => {
-          tooltip.style.opacity = "0";
-        });
-
-        // Click to isolate/filter ward
-        path.addEventListener("click", () => {
-          const filterSelect = document.getElementById("filter-ward");
-          if (filterSelect.value === wardName) {
-            filterSelect.value = "All"; // Toggle off
-          } else {
-            filterSelect.value = wardName; // Toggle on
-          }
-          applyFilters();
-        });
-      });
-    }
-
-    // Set map colored indicators based on dataset densities
-    function updateMapColorsAndFilters(activeWardFilter) {
-      document.querySelectorAll(".ward-path").forEach(path => {
-        const ward = path.getAttribute("data-ward");
-        
-        // Clear active class
-        path.classList.remove("active-filter");
-
-        if (activeWardFilter !== "All" && ward === activeWardFilter) {
-          path.classList.add("active-filter");
-        }
-
-        // Color coding density (Ward 1, Ward 3, Ward 5 contain critical severity items)
-        const wardIssues = RAW_DATABASE.filter(item => item.ward === ward);
-        const hasCritical = wardIssues.some(item => item.urgency === "Critical");
-        
-        if (hasCritical) {
-          path.classList.add("urgency-critical");
-        } else {
-          path.classList.remove("urgency-critical");
-        }
-      });
-    }
-
-    // Render Section 3: Top Interventions List
-    function renderUrgentInterventions() {
-      const container = document.getElementById("interventions-list");
-      container.innerHTML = "";
-
-      // Sort full database by severity to extract top interventions
-      const sortedInterventions = [...RAW_DATABASE]
-        .sort((a, b) => b.severity - a.severity)
-        .slice(0, 5);
-
-      sortedInterventions.forEach((item, idx) => {
-        const itemDiv = document.createElement("div");
-        itemDiv.className = `intervention-item ${item.id === selectedIssueId ? 'focused' : ''}`;
-        itemDiv.onclick = () => selectRow(item.id);
-
-        itemDiv.innerHTML = `
-          <div class="int-left">
-            <span class="int-rank">#${idx + 1}</span>
-            <div class="int-details">
-              <h4>${item.title}</h4>
-              <p>${item.ward} &bull; ${item.category}</p>
-            </div>
-          </div>
-          <div class="int-right">
-            <span class="int-severity">${item.severity}% Sev</span>
-            <p class="int-cost">₹ ${item.cost} L</p>
-          </div>
-        `;
-        container.appendChild(itemDiv);
-      });
-    }
-
-    // Render Section 3: Duplicate complaint groups
-    function renderClusteringPanel() {
-      const container = document.getElementById("cluster-list");
-      container.innerHTML = "";
-
-      // Only show items with duplicate lists
-      const clusterItems = RAW_DATABASE.filter(item => item.duplicates && item.duplicates.length > 0);
-
-      clusterItems.forEach(item => {
-        const itemDiv = document.createElement("div");
-        itemDiv.className = "cluster-item";
-        itemDiv.setAttribute("data-id", item.id);
-
-        let quotesHTML = "";
-        item.duplicates.forEach(q => {
-          quotesHTML += `<div class="citizen-quote">"${q}"</div>`;
-        });
-
-        itemDiv.innerHTML = `
-          <div class="cluster-header" onclick="toggleClusterAccordion(this)">
-            <h4>${item.title}</h4>
-            <div class="cluster-meta">
-              <span class="cluster-count">${item.duplicates.length + 1} Merged</span>
-              <i data-lucide="chevron-down" class="cluster-arrow" style="width:14px; height:14px;"></i>
-            </div>
-          </div>
-          <div class="cluster-body">
-            <p class="cluster-summary"><strong>AI Context Aggregator:</strong> Merged complaints cluster localized reports regarding this ${item.category.toLowerCase()} concern in ${item.ward}. Direct action will resolve all duplicates instantly.</p>
-            <div class="quotes-title">Citizen Feedback Logs</div>
-            <div class="citizen-quotes">
-              ${quotesHTML}
-            </div>
-          </div>
-        `;
-        container.appendChild(itemDiv);
-      });
-      lucide.createIcons();
-    }
-
-    // Handle accordion toggle
-    function toggleClusterAccordion(header) {
-      const item = header.parentElement;
-      const body = item.querySelector(".cluster-body");
-      const isExpanded = item.classList.contains("expanded");
-
-      // De-expand other accordions
-      document.querySelectorAll(".cluster-item").forEach(c => {
-        c.classList.remove("expanded");
-        c.querySelector(".cluster-body").style.display = "none";
-      });
-
-      if (!isExpanded) {
-        item.classList.add("expanded");
-        body.style.display = "block";
-        // Also auto-focus this item's AI Recommendations!
-        const id = parseInt(item.getAttribute("data-id"));
-        selectRow(id);
-      }
-    }
-
-    // Sector Doughnut chart update
-    function updateSectorDoughnutChart() {
-      const categories = ["Roads", "Water", "School", "Health", "Drainage", "Electricity"];
-      const counts = categories.map(cat => {
-        return currentData.filter(d => d.category === cat).reduce((sum, curr) => sum + curr.volume, 0);
-      });
-
-      if (doughnutChartInstance) {
-        doughnutChartInstance.data.datasets[0].data = counts;
-        doughnutChartInstance.update();
-      } else {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        doughnutChartInstance = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: categories,
-            datasets: [{
-              data: counts,
-              backgroundColor: [
-                '#0071e3', // Roads
-                '#30d158', // Water
-                '#bf5af2', // School
-                '#ff9f0a', // Health
-                '#ff453a', // Drainage
-                '#64d2ff'  // Electricity
-              ],
-              borderWidth: 1,
-              borderColor: '#0f172a'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  color: '#cbd5e1',
-                  font: { family: 'Inter', size: 10, weight: 600 },
-                  boxWidth: 10,
-                  padding: 12
-                }
-              }
-            },
-            cutout: '72%'
-          }
-        });
-      }
-    }
-
-    // Render Development Priorities table
-    function renderTable() {
-      const tbody = document.getElementById("ranking-table-body");
-      tbody.innerHTML = "";
-
-      if (currentData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No records found matching filters.</td></tr>`;
-        return;
-      }
-
-      // Sort data
-      const sortedData = [...currentData].sort((a, b) => {
-        let valA = a[currentSortColumn];
-        let valB = b[currentSortColumn];
-
-        if (typeof valA === 'string') {
-          return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-        } else {
-          return currentSortDirection === 'asc' ? valA - valB : valB - valA;
-        }
-      });
-
-      sortedData.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.className = item.id === selectedIssueId ? "selected" : "";
-        tr.onclick = () => selectRow(item.id);
-
-        const urgencyClass = `badge-${item.urgency.toLowerCase()}`;
-
-        tr.innerHTML = `
-          <td style="font-weight:600; color:var(--text-primary); max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.title}</td>
-          <td>${item.ward}</td>
-          <td>${item.volume}</td>
-          <td><span class="badge-urgency ${urgencyClass}">${item.urgency} (${item.severity}%)</span></td>
-          <td style="font-weight:700;">₹ ${item.cost} L</td>
-          <td style="font-size:12px; color:var(--text-secondary);">${item.action}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Sorting columns click
-    function sortTable(columnName) {
-      if (currentSortColumn === columnName) {
-        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        currentSortColumn = columnName;
-        currentSortDirection = 'desc';
-      }
-      renderTable();
-    }
-
-    // Select row action
-    function selectRow(id) {
-      selectedIssueId = id;
-      
-      // Update table selections
-      document.querySelectorAll("#ranking-table-body tr").forEach((tr, idx) => {
-        const item = currentData[idx];
-        if (item && item.id === id) {
-          tr.classList.add("selected");
-        } else {
-          tr.classList.remove("selected");
-        }
-      });
-
-      // Update Top Intervention highlights
-      document.querySelectorAll(".intervention-item").forEach(div => {
-        div.classList.remove("focused");
-      });
-
-      // Re-render items mapping selection
-      renderUrgentInterventions();
-      renderAIRecommendation();
-    }
-
-    // Render Infrastructure Gap comparison bar graph
-    function renderGapAnalysis() {
-      const container = document.getElementById("gap-bars-list");
-      container.innerHTML = "";
-
-      Object.entries(INFRASTRUCTURE_GAP_DATA).forEach(([sec, data]) => {
-        const barDiv = document.createElement("div");
-        barDiv.className = "gap-bar-item";
-
-        const currentPct = data.current;
-        const missingPct = data.target - currentPct;
-
-        barDiv.innerHTML = `
-          <div class="gap-header">
-            <span>${sec} (${data.label})</span>
-            <span class="pct-label">${currentPct}% Supply &bull; <span style="color:var(--color-red); font-weight:700;">${missingPct}% Gap</span></span>
-          </div>
-          <div class="gap-progress-track">
-            <div class="gap-fill-primary" style="width: ${currentPct}%;"></div>
-            <div class="gap-fill-missing" style="left: ${currentPct}%; width: ${missingPct}%;"></div>
-          </div>
-        `;
-        container.appendChild(barDiv);
-      });
-    }
-
-    // Render Dynamic AI Policy recommendations based on focused row
-    function renderAIRecommendation() {
-      const container = document.getElementById("ai-rec-box");
-      container.innerHTML = "";
-
-      const activeItem = RAW_DATABASE.find(item => item.id === selectedIssueId);
-
-      if (!activeItem) {
-        container.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--text-muted);">Select a planning priority item to generate AI analysis models.</div>`;
-        return;
-      }
-
-      const lang = isHindi ? "HI" : "EN";
-
-      container.innerHTML = `
-        <div class="ai-rec-header">
-          <span class="ai-badge">AI Assistant</span>
-          <div class="confidence-gauge">
-            <span>${TRANSLATIONS[lang].confidence}</span>
-            <span style="color: var(--color-blue);">${activeItem.severity + 3}%</span>
-          </div>
-        </div>
-        
-        <div class="rec-body">
-          <h4 style="color:var(--text-primary); font-size:14px; margin-bottom:6px;">${activeItem.title}</h4>
-          <p style="color:var(--text-secondary); line-height:1.5; font-size:12px;">
-            <strong>${TRANSLATIONS[lang].whyImportant}:</strong> ${activeItem.justify}
-          </p>
-        </div>
-
-        <div class="rec-impact-grid">
-          <div class="impact-item">
-            <h5>${TRANSLATIONS[lang].estImpact}</h5>
-            <p>${activeItem.impact}</p>
-          </div>
-          <div class="impact-item">
-            <h5>Cost vs Allocation</h5>
-            <p>Budget Needed: ₹ ${activeItem.cost} Lakhs</p>
-          </div>
-        </div>
-
-        <div class="rec-next-action">
-          <h5>${TRANSLATIONS[lang].nextAction}</h5>
-          <p>Execute: ${activeItem.action} (Budget Code: WP-${activeItem.id}0${activeItem.severity})</p>
-        </div>
-
-        <div class="rec-buttons">
-          <button class="btn-approve" onclick="triggerApproval(${activeItem.id})">${TRANSLATIONS[lang].approve}</button>
-          <button class="btn-defer" onclick="triggerDefer()">${TRANSLATIONS[lang].defer}</button>
-        </div>
-      `;
-    }
-
-    // Action Trigger: Approve Tender
-    function triggerApproval(itemId) {
-      // Find item
-      const item = RAW_DATABASE.find(i => i.id === itemId);
-      
-      // Update text in toast
-      const lang = isHindi ? "HI" : "EN";
-      document.getElementById("toast-title").innerText = TRANSLATIONS[lang].toastTitle;
-      document.getElementById("toast-desc").innerText = isHindi 
-        ? `${item.title.substring(0,25)}... स्वीकृत। नगर अभियंता को प्रेषित।`
-        : `Approved: "${item.title.substring(0,30)}...". Dispatched file.`;
-
-      // Show toast
+    function showToast(title, desc, mode) {
       const toast = document.getElementById("toast");
-      toast.classList.add("show");
+      if (mode === "cleanair") {
+        toast.className = "toast cleanair-toast show";
+        toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="shield-alert" style="color:var(--color-red);"></i>`;
+      } else {
+        toast.className = "toast priorities-toast show";
+        toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="check" style="color:var(--color-blue);"></i>`;
+      }
       
+      document.getElementById("toast-title").innerText = title;
+      document.getElementById("toast-desc").innerText = desc;
+      lucide.createIcons();
+
       setTimeout(() => {
         toast.classList.remove("show");
       }, 4000);
-    }
-
-    function triggerDefer() {
-      const toast = document.getElementById("toast");
-      const lang = isHindi ? "HI" : "EN";
-      document.getElementById("toast-title").innerText = isHindi ? "समीक्षा के लिए स्थगित" : "Project Deferred";
-      document.getElementById("toast-desc").innerText = isHindi
-        ? "कार्यवाही को समीक्षा के लिए सुरक्षित रखा गया है।"
-        : "Project deferred for planning committee review.";
-      
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 4000);
-    }
-
-    // Generate CSV string and trigger download locally
-    function exportCSV() {
-      if (currentData.length === 0) return;
-
-      const headers = ["ID", "Issue Title", "Ward", "Category", "Urgency", "AI Severity (%)", "Est Cost (Lakhs)", "Suggested Action"];
-      const rows = currentData.map(item => [
-        item.id,
-        `"${item.title.replace(/"/g, '""')}"`,
-        item.ward,
-        item.category,
-        item.urgency,
-        item.severity,
-        item.cost,
-        `"${item.action.replace(/"/g, '""')}"`
-      ]);
-
-      const csvContent = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-      
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `Constituency_Priorities_Report_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
   </script>
 </body>
