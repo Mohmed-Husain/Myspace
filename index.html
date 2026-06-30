@@ -44,6 +44,13 @@
       --border-smarthealth: rgba(255, 255, 255, 0.05);
       --accent-smarthealth: #00b4d8;
       --accent-smarthealth-glow: rgba(0, 180, 216, 0.35);
+
+      --bg-base-kisan: #040805;
+      --bg-sidebar-kisan: rgba(6, 12, 8, 0.88);
+      --bg-surface-kisan: rgba(10, 20, 14, 0.45);
+      --border-kisan: rgba(255, 255, 255, 0.05);
+      --accent-kisan: #30d158;
+      --accent-kisan-glow: rgba(48, 209, 88, 0.35);
       
       --color-blue: #0071e3;
       --color-blue-glow: rgba(0, 113, 227, 0.2);
@@ -1691,6 +1698,136 @@
       border-left: 3px solid var(--accent-smarthealth);
     }
 
+    /* ==========================================================================
+       KISAN ALERT SPECIFIC LAYOUT COMPONENTS
+       ========================================================================== */
+    .leaf-disease-container {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+    }
+    .leaf-photo-box {
+      height: 140px;
+      background: linear-gradient(135deg, #18241b 0%, #0e1610 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-kisan);
+      position: relative;
+    }
+    .leaf-photo-box i {
+      opacity: 0.35;
+    }
+    .leaf-diagnostics {
+      padding: 16px;
+    }
+    .leaf-diagnostics h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .leaf-diagnostics p {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .voice-widget {
+      background: rgba(48, 209, 88, 0.02);
+      border: 1px solid rgba(48, 209, 88, 0.12);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .voice-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 30px;
+      margin: 6px 0;
+    }
+    .voice-bar {
+      width: 3px;
+      height: 8px;
+      background: var(--accent-kisan);
+      border-radius: 10px;
+      animation: voice-pulse 1.2s infinite ease-in-out;
+    }
+    .voice-bar:nth-child(2) { height: 18px; animation-delay: 0.15s; }
+    .voice-bar:nth-child(3) { height: 26px; animation-delay: 0.3s; }
+    .voice-bar:nth-child(4) { height: 14px; animation-delay: 0.45s; }
+    .voice-bar:nth-child(5) { height: 6px; animation-delay: 0.6s; }
+    @keyframes voice-pulse {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.8); }
+    }
+    .voice-bubble {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    .kisan-map-path {
+      fill: rgba(48, 209, 88, 0.05);
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 1.5;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .kisan-map-path:hover {
+      fill: rgba(48, 209, 88, 0.15);
+      stroke: var(--accent-kisan);
+    }
+    .kisan-map-path.active-filter {
+      stroke: var(--accent-kisan);
+      fill: rgba(48, 209, 88, 0.25) !important;
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 12px var(--accent-kisan-glow));
+    }
+    .kisan-map-path.status-critical {
+      fill: rgba(255, 69, 58, 0.12);
+      stroke: rgba(255, 69, 58, 0.3);
+    }
+    .kisan-map-path.status-critical:hover {
+      fill: rgba(255, 69, 58, 0.25);
+      stroke: var(--color-red);
+    }
+
+    #dashboard-kisan-wrapper .nav-item.active {
+      background: rgba(48, 209, 88, 0.12);
+      border: 1px solid rgba(48, 209, 88, 0.22);
+      color: #fff;
+    }
+    #dashboard-kisan-wrapper .nav-item.active i {
+      color: var(--accent-kisan);
+    }
+    #dashboard-kisan-wrapper .ranking-table tr.selected td {
+      background: rgba(48, 209, 88, 0.05);
+      color: #fff;
+    }
+    #dashboard-kisan-wrapper .ranking-table tr.selected {
+      border-left: 3px solid var(--accent-kisan);
+    }
+
+    .toast.kisan-toast {
+      border: 1px solid var(--accent-kisan);
+      box-shadow: 0 10px 30px rgba(48, 209, 88, 0.2);
+    }
+    .kisan-toast .toast-icon {
+      background: rgba(48, 209, 88, 0.15);
+      color: var(--accent-kisan);
+    }
+
     /* Print Styles */
     @media print {
       body {
@@ -2831,6 +2968,365 @@
     </main>
   </div>
 
+
+  <!-- ==========================================================================
+       DASHBOARD 4: KISAN ALERT (AGRICULTURAL INTEL MONITOR)
+       ========================================================================== -->
+  <div id="dashboard-kisan-wrapper" class="dashboard-layout" style="display: none;">
+    
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="logo-container">
+        <div class="logo-badge" style="background: linear-gradient(135deg, var(--accent-kisan), #124e23);">
+          <i data-lucide="sprout" style="color: #ffffff; width: 20px; height: 20px;"></i>
+        </div>
+        <div class="logo-text">
+          <h2>Kisan Alert</h2>
+          <p>Agri Intelligence</p>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <div class="nav-group">
+        <span class="nav-label">FARM ADVISORY</span>
+        <button class="nav-item active">
+          <i data-lucide="activity"></i> <span>Overview Panel</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="sprout"></i> <span>Crop Advisory</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="cloud-lightning"></i> <span>Weather Alerts</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="droplet"></i> <span>Water Planning</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="scan"></i> <span>Disease Scan</span>
+        </button>
+        <button class="nav-item">
+          <i data-lucide="indian-rupee"></i> <span>Market Prices</span>
+        </button>
+      </div>
+
+      <!-- Filters Panel -->
+      <div class="filters-section">
+        <span class="nav-label">REGION & TIMELINE</span>
+        
+        <!-- Region Filter -->
+        <div class="filter-item">
+          <label for="filter-kisan-block">Block Region</label>
+          <select id="filter-kisan-block" class="filter-select" onchange="applyKisanFilters()">
+            <option value="All">All Blocks</option>
+            <option value="North Block">North Block Farms</option>
+            <option value="South Block">South Block Canal</option>
+            <option value="East Block">East Block Slopes</option>
+            <option value="West Block">West Block Dryland</option>
+          </select>
+        </div>
+
+        <!-- Season selector -->
+        <div class="filter-item">
+          <label for="filter-kisan-season">Active Season</label>
+          <select id="filter-kisan-season" class="filter-select" onchange="applyKisanFilters()">
+            <option value="All">All Seasons</option>
+            <option value="Rabi">Rabi Cycle</option>
+            <option value="Kharif">Kharif Cycle</option>
+          </select>
+        </div>
+
+        <button class="btn-export" onclick="resetKisanFilters()" style="margin-top: 10px; justify-content: center;">
+          <i data-lucide="refresh-cw"></i> <span>Reset Platform</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Workspace contents -->
+    <main class="workspace">
+      
+      <!-- Top header -->
+      <header class="header">
+        <div class="search-bar-container">
+          <i data-lucide="search"></i>
+          <input type="text" id="search-bar-kisan" class="search-input" placeholder="Search crop or disease..." oninput="applyKisanFilters()">
+        </div>
+
+        <div class="header-actions">
+          
+          <!-- Explicit Dashboard Switcher Button -->
+          <button class="switcher-badge" onclick="toggleDashboard()">
+            <i data-lucide="repeat"></i> Priorities Dashboard <span>Ctrl + `</span>
+          </button>
+
+          <div class="filter-item" style="flex-direction: row; align-items: center; gap: 8px;">
+            <i data-lucide="sun" style="width: 16px; height: 16px; color: #575e75;"></i>
+            <select id="filter-time-kisan" class="filter-select" onchange="applyKisanFilters()" style="padding: 6px 28px 6px 12px; width: 130px;">
+              <option value="live">Live Season</option>
+              <option value="annual">Annual Trend</option>
+            </select>
+          </div>
+
+          <button class="action-btn" style="color: var(--accent-kisan); border-color: rgba(48,209,88,0.25); background: rgba(48,209,88,0.05);">
+            <i data-lucide="bell"></i>
+            <span class="btn-badge"></span>
+          </button>
+
+          <div class="profile-card">
+            <div class="avatar" style="border-color: rgba(48,209,88,0.25);">AO</div>
+            <div class="profile-info">
+              <h4>Shri. S. Patel</h4>
+              <p>District Agri Officer</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main view cards -->
+      <div class="main-content">
+        
+        <!-- KPIs -->
+        <section class="kpi-grid">
+          <div class="glass-card kpi-card" style="border-color: rgba(48, 209, 88, 0.25);">
+            <span class="kpi-label">Crop Health Index</span>
+            <div class="kpi-value" id="kisan-kpi-health" style="color: var(--accent-kisan);">0%</div>
+            <div class="kpi-trend trend-up">
+              <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+              <span>Optimal Growth</span>
+            </div>
+            <i data-lucide="sprout" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Rainfall Forecast</span>
+            <div class="kpi-value" id="kisan-kpi-rain" style="color: var(--color-cyan);">85mm</div>
+            <div class="kpi-trend" style="color: var(--color-cyan);">
+              <i data-lucide="cloud-rain" style="width: 12px; height: 12px;"></i>
+              <span>Next 5 days</span>
+            </div>
+            <i data-lucide="cloud-rain" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Irrigation Advice</span>
+            <div class="kpi-value" id="kisan-kpi-irrigation" style="font-size:18px; padding-top:6px; color: var(--color-green);">Optimal</div>
+            <div class="kpi-trend trend-down" style="color: var(--color-green);">
+              <i data-lucide="droplet" style="width: 12px; height: 12px;"></i>
+              <span>Canal gates open</span>
+            </div>
+            <i data-lucide="droplets" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Active Disease Risk</span>
+            <div class="kpi-value" id="kisan-kpi-risk" style="color: var(--color-red);">0</div>
+            <div class="kpi-trend trend-up" style="color: var(--color-red);">
+              <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i>
+              <span>Yellow Rust Alarm</span>
+            </div>
+            <i data-lucide="shield-alert" class="kpi-icon"></i>
+          </div>
+
+          <div class="glass-card kpi-card">
+            <span class="kpi-label">Market price Trend</span>
+            <div class="kpi-value" id="kisan-kpi-market" style="color: var(--color-orange);">+8.4%</div>
+            <div class="kpi-trend" style="color: var(--color-orange);">
+              <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+              <span>Best selling season</span>
+            </div>
+            <i data-lucide="indian-rupee" class="kpi-icon"></i>
+          </div>
+        </section>
+
+        <!-- GIS Crop Map & Market Charts -->
+        <div class="grid-gis-charts">
+          <div class="glass-card heatmap-card" style="border-color: rgba(48,209,88,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="map" style="color: var(--accent-kisan);"></i> GIS Agriculture Block Map</h3>
+                <div class="card-subheader">Interlocking regional crop parcels. Click sectors to filter farm metrics.</div>
+              </div>
+            </div>
+            
+            <div class="map-wrapper">
+              <svg viewBox="0 0 500 350" class="satellite-svg-grid">
+                <!-- Outer lines representing blocks boundaries -->
+                <polygon points="250,110 320,150 430,90 390,15 250,15" class="kisan-map-path" data-block="West Block" />
+                <polygon points="320,150 320,230 430,280 470,180 430,90" class="kisan-map-path" data-block="East Block" />
+                <polygon points="250,270 180,230 80,280 180,315 310,315 430,280" class="kisan-map-path" data-block="South Block" />
+                <polygon points="250,110 320,150 320,230 250,270 180,230 180,150" class="kisan-map-path" data-block="North Block" />
+                
+                <!-- Facility Markers inside blocks -->
+                <!-- North Block (Large Green Node) -->
+                <circle cx="250" cy="180" r="22" class="pulse-ring" style="--marker-color: var(--color-green);" />
+                <circle cx="250" cy="180" r="7" class="facility-node" style="--marker-color: var(--color-green);" onclick="filterKisanMap('North Block')" />
+
+                <!-- West Block (Yellow Node) -->
+                <circle cx="340" cy="80" r="14" class="pulse-ring" style="--marker-color: var(--color-orange);" />
+                <circle cx="340" cy="80" r="5" class="facility-node" style="--marker-color: var(--color-orange);" onclick="filterKisanMap('West Block')" />
+
+                <!-- South Block (Canal Gate Red Node) -->
+                <circle cx="260" cy="290" r="18" class="pulse-ring" style="--marker-color: var(--color-red);" />
+                <circle cx="260" cy="290" r="6" class="facility-node" style="--marker-color: var(--color-red);" onclick="filterKisanMap('South Block')" />
+
+                <!-- East Block (Green Node) -->
+                <circle cx="380" cy="200" r="12" class="pulse-ring" style="--marker-color: var(--color-green);" />
+                <circle cx="380" cy="200" r="5" class="facility-node" style="--marker-color: var(--color-green);" onclick="filterKisanMap('East Block')" />
+
+                <!-- Labels -->
+                <text x="250" y="210" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">NORTH WHEAT</text>
+                <text x="340" y="105" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">WEST COTTON</text>
+                <text x="260" y="315" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">SOUTH CANAL</text>
+                <text x="380" y="220" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none">EAST MAIZE</text>
+              </svg>
+              
+              <div class="map-tooltip" id="kisan-map-tooltip">
+                <h5 id="kisan-tooltip-title">Block Name</h5>
+                <p>Moisture Level: <span class="value" id="kisan-tooltip-moisture">0%</span></p>
+                <p>Status: <span class="value" id="kisan-tooltip-status">Normal</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="trending-up" style="color: var(--accent-kisan);"></i> Market Intelligence Trends</h3>
+                <div class="card-subheader">Weekly crop pricing trends per quintal (Agmarknet inputs)</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="kisanTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crop Recommendation & Weather Alerts -->
+        <div class="grid-interventions-clustering">
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="sprout" style="color: var(--accent-kisan);"></i> AI Crop Recommendation engine</h3>
+                <div class="card-subheader">Best fit crops sorted by soil compatibility and expected yields</div>
+              </div>
+            </div>
+            <div class="interventions-list" id="kisan-recommendations-list" style="margin-top: 15px;"></div>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="cloud-lightning" style="color: var(--accent-kisan);"></i> Early Weather Alerts</h3>
+                <div class="card-subheader">Wind, rain, and dry-spell risk alarms with irrigation advice</div>
+              </div>
+            </div>
+            <div class="cluster-list" id="kisan-weather-list" style="margin-top: 15px;"></div>
+          </div>
+        </div>
+
+        <!-- Soil, Leaf Disease Scan, & Voice Assistant -->
+        <div class="grid-gis-charts">
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="droplet" style="color: var(--accent-kisan);"></i> Soil N-P-K Nutrient & Moisture Planner</h3>
+                <div class="card-subheader">Real-time parameters tracked by digital ground sensors</div>
+              </div>
+            </div>
+            <div class="gap-bars-list" id="kisan-soil-metrics" style="margin-top: 15px;"></div>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="scan" style="color: var(--accent-kisan);"></i> Leaf Disease Image Scanner</h3>
+                <div class="card-subheader">Computer vision leaf scan verifying rust spots and treatments</div>
+              </div>
+            </div>
+            <div class="leaf-disease-container" id="kisan-disease-card"></div>
+          </div>
+        </div>
+
+        <!-- Voice queries & Local Expert Follow-up -->
+        <div class="grid-insights-gap">
+          <div class="glass-card gap-card">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="mic" style="color: var(--accent-kisan);"></i> Bilingual AI Farmer Voice Assistant</h3>
+                <div class="card-subheader">Speak query in Hindi/local dialect to receive audio advisories</div>
+              </div>
+            </div>
+            <div class="voice-widget" style="margin-top: 15px;">
+              <div class="voice-waveform">
+                <div class="voice-bar"></div>
+                <div class="voice-bar"></div>
+                <div class="voice-bar"></div>
+                <div class="voice-bar"></div>
+                <div class="voice-bar"></div>
+              </div>
+              <div class="voice-bubble" id="kisan-voice-bubble">
+                "पत्ता पीला पड़ रहा है और छोटे काले धब्बे दिख रहे हैं, क्या छिड़काव करें?"
+              </div>
+              <button class="btn-approve" onclick="dispatchKisanVoiceQuery()" style="background:var(--accent-kisan); box-shadow:0 4px 15px rgba(48,209,88,0.25);">
+                <i data-lucide="mic"></i> Click to Speak (Hindi / EN)
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card ai-card" style="border-color: rgba(48,209,88,0.12);">
+            <div class="card-header">
+              <div>
+                <h3><i data-lucide="users" style="color: var(--accent-kisan);"></i> Local Expert & Activity Planner</h3>
+                <div class="card-subheader">Agri extension officers allocated for immediate field follow-up</div>
+              </div>
+            </div>
+            <div class="operations-container">
+              <div class="op-list" id="kisan-expert-info"></div>
+              <div class="op-dispatch-box" id="kisan-timeline-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crop comparison database -->
+        <div class="glass-card table-card">
+          <div class="card-header">
+            <div>
+              <h3><i data-lucide="list-ordered" style="color: var(--accent-kisan);"></i> Regional Crop Performance Directory</h3>
+              <div class="card-subheader">Complete farm registry sorted by health scores and irrigation needs</div>
+            </div>
+            <div class="table-actions">
+              <button class="btn-export" onclick="exportKisanCSV()"><i data-lucide="download"></i> Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th onclick="sortKisanTable('name')">Crop Name <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortKisanTable('type')">Category <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortKisanTable('healthScore')">Health Score <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortKisanTable('moisture')">Soil Moisture <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortKisanTable('waterNeeded')">Irrigation Need <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                  <th onclick="sortKisanTable('yieldEst')">Est. Yield <i data-lucide="chevrons-up-down" style="width:12px;"></i></th>
+                </tr>
+              </thead>
+              <tbody id="kisan-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Info -->
+      <footer style="padding: 24px 40px; border-top: 1px solid var(--border-kisan); text-align: center; font-size: 11px; color: #575e75;">
+        Kisan Alert AI Controller &bull; Ministry of Agriculture &bull; &copy; 2026 Government of India
+      </footer>
+
+    </main>
+  </div>
+
   <!-- Toast Notification element -->
   <div class="toast priorities-toast" id="toast">
     <div class="toast-icon">
@@ -2970,6 +3466,13 @@
     let smarthealthFootfallChart = null;
     let smarthealthForecastChart = null;
 
+    // Kisan Alert variables
+    let kisanFilteredData = [];
+    let selectedKisanId = 601;
+    let kisanSortCol = "healthScore";
+    let kisanSortDir = "desc";
+    let kisanPriceChart = null;
+
 
     // ==========================================================================
     // INITIALIZATION & DUAL TOGGLE ENGINE
@@ -2992,12 +3495,14 @@
       const prioritiesWrapper = document.getElementById("dashboard-priorities-wrapper");
       const cleanAirWrapper = document.getElementById("dashboard-cleanair-wrapper");
       const smartHealthWrapper = document.getElementById("dashboard-smarthealth-wrapper");
+      const kisanWrapper = document.getElementById("dashboard-kisan-wrapper");
 
       if (currentActiveDashboard === "priorities") {
         // Toggle to CleanAir
         prioritiesWrapper.style.display = "none";
         cleanAirWrapper.style.display = "grid";
         smartHealthWrapper.style.display = "none";
+        kisanWrapper.style.display = "none";
         currentActiveDashboard = "cleanair";
         document.title = "CleanAir & Clear Streets - Environment Command Center";
 
@@ -3020,6 +3525,7 @@
         prioritiesWrapper.style.display = "none";
         cleanAirWrapper.style.display = "none";
         smartHealthWrapper.style.display = "grid";
+        kisanWrapper.style.display = "none";
         currentActiveDashboard = "smarthealth";
         document.title = "Smart Health - District Operations Control Console";
 
@@ -3037,8 +3543,32 @@
 
         applySmartHealthFilters();
         showToast("Switched Dashboard", "Shifting to Smart Health Supply Control", "smarthealth");
+      } else if (currentActiveDashboard === "smarthealth") {
+        // Toggle to Kisan Alert
+        prioritiesWrapper.style.display = "none";
+        cleanAirWrapper.style.display = "none";
+        smartHealthWrapper.style.display = "none";
+        kisanWrapper.style.display = "grid";
+        currentActiveDashboard = "kisan";
+        document.title = "Kisan Alert - AI Agricultural Advisory Platform";
+
+        // Transition background styles and root theme variables on body
+        document.body.className = "kisan-theme";
+        document.documentElement.style.setProperty('--theme-bg', 'var(--bg-base-kisan)');
+        document.documentElement.style.setProperty('--theme-sidebar', 'var(--bg-sidebar-kisan)');
+        document.documentElement.style.setProperty('--theme-surface', 'var(--bg-surface-kisan)');
+        document.documentElement.style.setProperty('--theme-border', 'var(--border-kisan)');
+        document.documentElement.style.setProperty('--theme-accent', 'var(--accent-kisan)');
+        document.documentElement.style.setProperty('--theme-accent-glow', 'var(--accent-kisan-glow)');
+        document.documentElement.style.setProperty('--theme-muted', '#425746');
+        document.documentElement.style.setProperty('--glow-color-1', 'var(--accent-kisan)');
+        document.documentElement.style.setProperty('--glow-color-2', 'var(--color-orange)');
+
+        applyKisanFilters();
+        showToast("Switched Dashboard", "Shifting to Kisan Alert Advisor", "kisan");
       } else {
         // Toggle to Priorities
+        kisanWrapper.style.display = "none";
         smartHealthWrapper.style.display = "none";
         cleanAirWrapper.style.display = "none";
         prioritiesWrapper.style.display = "grid";
@@ -3068,6 +3598,8 @@
         } else if (currentActiveDashboard === "cleanair") {
           btn.innerHTML = `<i data-lucide="repeat"></i> Smart Health <span>Ctrl + \`</span>`;
         } else if (currentActiveDashboard === "smarthealth") {
+          btn.innerHTML = `<i data-lucide="repeat"></i> Kisan Alert <span>Ctrl + \`</span>`;
+        } else if (currentActiveDashboard === "kisan") {
           btn.innerHTML = `<i data-lucide="repeat"></i> Priorities Dashboard <span>Ctrl + \`</span>`;
         }
       });
@@ -4307,6 +4839,399 @@
     }
 
 
+    // ==========================================================================
+    // DATABASE 4: KISAN ALERT (AGRICULTURAL PLATFORM)
+    // ==========================================================================
+    const KISAN_DB = [
+      { id: 601, name: "Wheat (Triticum)", type: "Cereal", healthScore: 92, moisture: 42, nitrogen: 75, phosphorus: 62, potassium: 80, waterNeeded: 120, yieldEst: "4.2 tonnes/ha", compatibility: 96, block: "North Block", season: "Rabi", status: "Optimal", details: "Excellent soil moisture. Minor rust potential detected on leaves.", recommended: "Schedule second watering in 3 days. Apply nitrogen top dressing.", code: "C-601W" },
+      { id: 602, name: "Rice (Oryza sativa)", type: "Cereal", healthScore: 78, moisture: 85, nitrogen: 48, phosphorus: 35, potassium: 50, waterNeeded: 450, yieldEst: "3.8 tonnes/ha", compatibility: 85, block: "South Block", season: "Kharif", status: "Alert", details: "Water logging at limits. Potential nitrogen depletion detected in low-lying zones.", recommended: "Reduce irrigation supply. Apply organic liquid manure sprays.", code: "C-602R" },
+      { id: 603, name: "Cotton (Gossypium)", type: "Fiber", healthScore: 68, moisture: 28, nitrogen: 40, phosphorus: 45, potassium: 70, waterNeeded: 80, yieldEst: "1.8 tonnes/ha", compatibility: 78, block: "West Block", season: "Kharif", status: "Critical", details: "High risk of bollworm attack due to humidity rise. Soil moisture below critical dry limits.", recommended: "Deploy micro-sprinklers for targeted irrigation. Spray neem-based bio-pesticides.", code: "C-603C" },
+      { id: 604, name: "Maize (Zea mays)", type: "Cereal", healthScore: 88, moisture: 50, nitrogen: 68, phosphorus: 58, potassium: 65, waterNeeded: 180, yieldEst: "5.5 tonnes/ha", compatibility: 92, block: "East Block", season: "Rabi", status: "Optimal", details: "Active vegetative growth. Chlorophyll index at premium levels.", recommended: "No immediate adjustments needed. Maintain scheduled weeding operations.", code: "C-604M" },
+      { id: 605, name: "Mustard (Brassica)", type: "Oilseed", healthScore: 82, moisture: 35, nitrogen: 60, phosphorus: 50, potassium: 72, waterNeeded: 60, yieldEst: "1.5 tonnes/ha", compatibility: 88, block: "East Block", season: "Rabi", status: "Normal", details: "Flowering stage commenced. Soil temperatures stable.", recommended: "Apply minor sulfur dose. Irrigate lightly during dry spell forecast.", code: "C-605B" }
+    ];
+
+    const KISAN_ALERTS = [
+      { id: 701, title: "Yellow Rust Detection", location: "North Block Wheat Farms", time: "08:15 AM", severity: "Critical", details: "Computer vision analysis of leaf image confirms Puccinia striiformis (Yellow Rust). Risk of spreading is extremely high." },
+      { id: 702, title: "Bollworm Infestation Warning", location: "West Block Cotton Fields", time: "09:30 AM", severity: "High", details: "Sensor grids report micro-climate conditions matching peak bollworm hatching indices. Immediate bio-sprays recommended." },
+      { id: 703, title: "Dry Spell Alarm", location: "East Block Mustard Lands", time: "11:10 AM", severity: "Medium", details: "Soil moisture dropped by 15% in last 48 hours. Temperature peaks forecast tomorrow." }
+    ];
+
+
+    // ==========================================================================
+    // MODULE SYSTEM: KISAN ALERT (GREEN/WARM ADVISORY LOGIC)
+    // ==========================================================================
+    function resetKisanFilters() {
+      document.getElementById("filter-kisan-block").value = "All";
+      document.getElementById("filter-kisan-season").value = "All";
+      document.getElementById("search-bar-kisan").value = "";
+      applyKisanFilters();
+    }
+
+    function applyKisanFilters() {
+      const blockFilter = document.getElementById("filter-kisan-block").value;
+      const seasonFilter = document.getElementById("filter-kisan-season").value;
+      const searchQuery = document.getElementById("search-bar-kisan").value.toLowerCase();
+
+      kisanFilteredData = KISAN_DB.filter(item => {
+        if (blockFilter !== "All" && item.block !== blockFilter) return false;
+        if (seasonFilter !== "All" && item.season !== seasonFilter) return false;
+        
+        if (searchQuery && !item.name.toLowerCase().includes(searchQuery) && !item.type.toLowerCase().includes(searchQuery)) return false;
+
+        return true;
+      });
+
+      // Sync selection
+      if (kisanFilteredData.length > 0) {
+        if (!kisanFilteredData.some(item => item.id === selectedKisanId)) {
+          selectedKisanId = kisanFilteredData[0].id;
+        }
+      } else {
+        selectedKisanId = null;
+      }
+
+      syncKisanMapOutlines(blockFilter);
+      renderKisanKPIs();
+      renderKisanRecommendations();
+      renderKisanSoilMetrics();
+      renderKisanDiseaseCard();
+      renderKisanTable();
+      renderKisanTimeline();
+      renderKisanAlerts();
+      updateKisanCharts();
+    }
+
+    function syncKisanMapOutlines(activeBlock) {
+      document.querySelectorAll("#dashboard-kisan-wrapper .kisan-map-path").forEach(path => {
+        const block = path.getAttribute("data-block");
+        path.classList.remove("active-filter");
+        
+        if (activeBlock !== "All" && block === activeBlock) {
+          path.classList.add("active-filter");
+        }
+
+        const blockCrops = KISAN_DB.filter(item => item.block === block);
+        if (blockCrops.some(item => item.status === "Critical")) {
+          path.classList.add("status-critical");
+        } else {
+          path.classList.remove("status-critical");
+        }
+      });
+    }
+
+    function filterKisanMap(blockName) {
+      const select = document.getElementById("filter-kisan-block");
+      select.value = select.value === blockName ? "All" : blockName;
+      applyKisanFilters();
+    }
+
+    // Map tooltips
+    const kisanMapPaths = document.querySelectorAll("#dashboard-kisan-wrapper .kisan-map-path");
+    const kisanTooltip = document.getElementById("kisan-map-tooltip");
+
+    kisanMapPaths.forEach(path => {
+      const blockName = path.getAttribute("data-block");
+      path.addEventListener("mouseenter", () => {
+        const crops = KISAN_DB.filter(d => d.block === blockName);
+        const avgMoist = crops.length > 0 ? Math.round(crops.reduce((s, c) => s + c.moisture, 0) / crops.length) : 0;
+        const isCritical = crops.some(d => d.status === "Critical");
+        
+        document.getElementById("kisan-tooltip-title").innerText = blockName.toUpperCase();
+        document.getElementById("kisan-tooltip-moisture").innerText = `${avgMoist}%`;
+        document.getElementById("kisan-tooltip-status").innerText = isCritical ? "DRY SPELL RISK" : "OPTIMAL";
+        kisanTooltip.style.opacity = "1";
+      });
+
+      path.addEventListener("mousemove", (e) => {
+        const wrapper = path.closest(".map-wrapper");
+        const rect = wrapper.getBoundingClientRect();
+        kisanTooltip.style.left = `${e.clientX - rect.left + 15}px`;
+        kisanTooltip.style.top = `${e.clientY - rect.top + 15}px`;
+      });
+
+      path.addEventListener("mouseleave", () => {
+        kisanTooltip.style.opacity = "0";
+      });
+    });
+
+    function renderKisanKPIs() {
+      const health = kisanFilteredData.length > 0
+        ? Math.round(kisanFilteredData.reduce((sum, i) => sum + i.healthScore, 0) / kisanFilteredData.length)
+        : 100;
+      document.getElementById("kisan-kpi-health").innerText = `${health}%`;
+
+      const criticalCount = kisanFilteredData.filter(i => i.status === "Critical").length;
+      document.getElementById("kisan-kpi-risk").innerText = criticalCount;
+    }
+
+    function renderKisanRecommendations() {
+      const container = document.getElementById("kisan-recommendations-list");
+      container.innerHTML = "";
+
+      const sorted = [...KISAN_DB].sort((a,b) => b.healthScore - a.healthScore);
+      sorted.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = `intervention-item ${item.id === selectedKisanId ? 'focused' : ''}`;
+        div.onclick = () => selectKisanRow(item.id);
+
+        div.innerHTML = `
+          <div class="int-left">
+            <span class="int-rank">#${idx + 1}</span>
+            <div class="int-details">
+              <h4>${item.name}</h4>
+              <p>${item.block} &bull; ${item.season} Crop</p>
+            </div>
+          </div>
+          <div class="int-right" style="text-align:right;">
+            <span class="int-severity" style="background:rgba(48,209,88,0.12); border-color:rgba(48,209,88,0.25); color:var(--accent-kisan);">${item.compatibility}% Fit</span>
+            <p class="int-cost" style="margin-top:4px;">${item.yieldEst}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderKisanSoilMetrics() {
+      const container = document.getElementById("kisan-soil-metrics");
+      container.innerHTML = "";
+
+      const activeItem = KISAN_DB.find(item => item.id === selectedKisanId);
+      if (!activeItem) return;
+
+      const metrics = [
+        { label: "Soil Moisture Index", val: activeItem.moisture, col: "var(--accent-kisan)" },
+        { label: "Nitrogen (N) Content", val: activeItem.nitrogen, col: "var(--color-blue)" },
+        { label: "Phosphorus (P) Content", val: activeItem.phosphorus, col: "var(--color-purple)" },
+        { label: "Potassium (K) Content", val: activeItem.potassium, col: "var(--color-orange)" }
+      ];
+
+      metrics.forEach(m => {
+        const bar = document.createElement("div");
+        bar.className = "gap-bar-item";
+        bar.innerHTML = `
+          <div class="gap-header">
+            <span>${m.label}</span>
+            <span class="pct-label" style="color:#fff; font-weight:700;">${m.val}%</span>
+          </div>
+          <div class="gap-progress-track">
+            <div class="gap-fill-primary" style="width: ${m.val}%; background: ${m.col};"></div>
+          </div>
+        `;
+        container.appendChild(bar);
+      });
+    }
+
+    function renderKisanDiseaseCard() {
+      const container = document.getElementById("kisan-disease-card");
+      container.innerHTML = "";
+
+      const activeItem = KISAN_DB.find(item => item.id === selectedKisanId);
+      if (!activeItem) return;
+
+      const hasRust = activeItem.name.includes("Wheat");
+      const title = hasRust ? "Rust Spot Anomaly Detected" : "Nominal Leaf Diagnostics";
+      const conf = hasRust ? 94 : 98;
+      const suggest = hasRust 
+        ? "Apply propiconazole sprays within 48 hours. Clear drainage logs." 
+        : "No active leaf anomalies spotted. Maintain routine soil weeding.";
+
+      container.innerHTML = `
+        <div class="leaf-photo-box">
+          <i data-lucide="scan" style="width:48px; height:48px;"></i>
+          <span class="evidence-tag" style="background:rgba(0,0,0,0.8); border-color:var(--accent-kisan); color:var(--accent-kisan);">${activeItem.name.split(" ")[0]} leaf</span>
+        </div>
+        <div class="leaf-diagnostics">
+          <h4>${title}</h4>
+          <p><strong>CV MODEL CONFIDENCE:</strong> ${conf}% verified</p>
+          <div style="background:rgba(0,0,0,0.25); padding:10px; border-radius:6px; font-size:11px; margin-top:8px; border-left:3px solid ${hasRust ? 'var(--color-red)' : 'var(--accent-kisan)'};">
+            <span style="font-weight:700; color:#fff;">TREATMENT DIRECTIVE:</span><br/>
+            ${suggest}
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function renderKisanTable() {
+      const tbody = document.getElementById("kisan-table-body");
+      tbody.innerHTML = "";
+
+      if (kisanFilteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#575e75;">No crop records found.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...kisanFilteredData].sort((a,b) => {
+        let valA = a[kisanSortCol];
+        let valB = b[kisanSortCol];
+        return kisanSortDir === 'desc' ? valB - valA : valA - valB;
+      });
+
+      sorted.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.className = item.id === selectedKisanId ? "selected" : "";
+        tr.onclick = () => selectKisanRow(item.id);
+
+        const badgeClass = item.status === 'Critical' ? 'badge-critical' : (item.status === 'Alert' ? 'badge-high' : 'badge-medium');
+
+        tr.innerHTML = `
+          <td style="font-weight:600; color:#fff;">${item.name}</td>
+          <td>${item.type}</td>
+          <td><span class="badge-urgency ${badgeClass}">${item.healthScore}% Health</span></td>
+          <td>${item.moisture}% moisture</td>
+          <td>₹ ${item.waterNeeded} mm/cycle</td>
+          <td style="font-weight:700;">${item.yieldEst}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortKisanTable(col) {
+      if (kisanSortCol === col) {
+        kisanSortDir = kisanSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        kisanSortCol = col;
+        kisanSortDir = 'desc';
+      }
+      renderKisanTable();
+    }
+
+    function selectKisanRow(id) {
+      selectedKisanId = id;
+      renderKisanTable();
+      renderKisanRecommendations();
+      renderKisanSoilMetrics();
+      renderKisanDiseaseCard();
+      renderKisanTimeline();
+    }
+
+    function renderKisanTimeline() {
+      const container = document.getElementById("kisan-timeline-box");
+      container.innerHTML = "";
+
+      const activeItem = KISAN_DB.find(item => item.id === selectedKisanId);
+      if (!activeItem) return;
+
+      // Expert panel info sync
+      const expertList = document.getElementById("kisan-expert-info");
+      expertList.innerHTML = `
+        <div class="op-item">
+          <div class="op-left">
+            <div class="op-icon" style="color:var(--accent-kisan);"><i data-lucide="user-check"></i></div>
+            <div class="op-info">
+              <h4>Dr. Ramdev Patel</h4>
+              <p>Senior Agronomist (NIC)</p>
+            </div>
+          </div>
+          <button class="btn-export" onclick="escalateToExpert(${activeItem.id})" style="padding:4px 8px; font-size:9px;"><i data-lucide="phone"></i> Call</button>
+        </div>
+      `;
+
+      container.innerHTML = `
+        <h4 style="color:#fff; font-size:13px;"><i data-lucide="calendar" style="width:16px; display:inline-block; vertical-align:middle; color:var(--accent-kisan);"></i> Field Activity Planner</h4>
+        <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin-top:6px;">
+          Schedules generated from weather models for <strong>${activeItem.name.split(" ")[0]}</strong> crop in ${activeItem.block}:
+        </p>
+        <div style="background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:6px; font-size:11px; margin-top:6px; line-height:1.4;">
+          <span style="color:var(--accent-kisan); font-weight:700;">IRRIGATION CYCLE:</span> Every ${Math.round(activeItem.waterNeeded/20)} Days<br/>
+          <span style="color:var(--color-orange); font-weight:700;">SPRAY REMINDER:</span> Nitro-phosphates top dressing inside 4 days.
+        </div>
+        <button class="btn-approve" onclick="escalateToExpert(${activeItem.id})" style="background:var(--accent-kisan); margin-top:8px; box-shadow:0 4px 15px rgba(48,209,88,0.25);">
+          <i data-lucide="share-2"></i> Send Schedule to Farmer SMS
+        </button>
+      `;
+      lucide.createIcons();
+    }
+
+    function escalateToExpert(itemId) {
+      const item = KISAN_DB.find(c => c.id === itemId);
+      showToast("Schedule Sent", `Advisory dispatched to farming mobile registered at ${item.block}`, "kisan");
+    }
+
+    function renderKisanAlerts() {
+      const container = document.getElementById("kisan-weather-list");
+      container.innerHTML = "";
+
+      KISAN_ALERTS.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "cluster-item expanded";
+
+        div.innerHTML = `
+          <div class="cluster-header" style="cursor:default;">
+            <h4 style="color:var(--color-orange); font-size:12px;"><i data-lucide="cloud-lightning" style="width:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> ${item.title}</h4>
+            <span class="badge-urgency badge-high">${item.severity}</span>
+          </div>
+          <div class="cluster-body" style="display:block; padding:10px 16px; background:rgba(0,0,0,0.15);">
+            <p style="font-size:11px; color:#cbd5e1;"><strong>${item.location}</strong> &bull; ${item.details}</p>
+            <p style="font-size:9px; color:#64748b; margin-top:4px;">Triggered at: ${item.time}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function dispatchKisanVoiceQuery() {
+      const bubble = document.getElementById("kisan-voice-bubble");
+      bubble.style.opacity = 0.5;
+      
+      setTimeout(() => {
+        bubble.innerHTML = `<strong>AI ANSWER (Hindi):</strong> "यह लक्षण पीला रतुआ (Yellow Rust) बीमारी के हैं। तुरंत २४ घंटे के भीतर २५० मिलीलीटर प्रोपिकोनाज़ोल (Propiconazole) प्रति एकड़ छिड़काव करें। जल निकास सुनिश्चित रखें।"`;
+        bubble.style.opacity = 1;
+        showToast("Voice Analysis Done", "Agri Assistant Hindi response synthesized", "kisan");
+      }, 1200);
+    }
+
+    function updateKisanCharts() {
+      const cropsList = ["Wheat", "Rice", "Cotton", "Maize", "Mustard"];
+      const prices = [2125, 2040, 6800, 1960, 5450];
+
+      if (kisanPriceChart) {
+        kisanPriceChart.update();
+      } else {
+        const ctx = document.getElementById('kisanTrendChart').getContext('2d');
+        kisanPriceChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: cropsList,
+            datasets: [{
+              label: 'Price per Quintal (₹)',
+              data: prices,
+              borderColor: '#30d158',
+              backgroundColor: 'rgba(48, 209, 88, 0.08)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#cbd5e1', font: { size: 10, weight: 600 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function exportKisanCSV() {
+      const headers = ["Crop Name", "Type", "Health Score (%)", "Soil Moisture (%)", "Irrigation Need (mm)", "Yield Est"];
+      const rows = kisanFilteredData.map(item => [item.name, item.type, item.healthScore, item.moisture, item.waterNeeded, item.yieldEst]);
+      const csv = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Kisan_Alert_Advisory_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+
     function showToast(title, desc, mode) {
       const toast = document.getElementById("toast");
       if (mode === "cleanair") {
@@ -4315,6 +5240,9 @@
       } else if (mode === "smarthealth") {
         toast.className = "toast smarthealth-toast show";
         toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="heart-pulse" style="color:var(--accent-smarthealth);"></i>`;
+      } else if (mode === "kisan") {
+        toast.className = "toast kisan-toast show";
+        toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="sprout" style="color:var(--accent-kisan);"></i>`;
       } else {
         toast.className = "toast priorities-toast show";
         toast.querySelector(".toast-icon").innerHTML = `<i data-lucide="check" style="color:var(--color-blue);"></i>`;
