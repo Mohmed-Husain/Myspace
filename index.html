@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National AI Hackathon Showcase</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Explore cutting-edge Artificial Intelligence solutions for national development, civil infrastructure, healthcare, and agriculture. Driven by Apple-inspired design and glassmorphic dashboards.">
+  <meta name="keywords" content="AI, Hackathon, GovTech, Apple Design, Glassmorphism, Dashboard, Kisan, CleanAir, Smart Health, Priorities">
+  <meta name="author" content="National AI Initiative Team">
+  
+  <!-- Google Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Clean Reset and Core Variables */
+    :root {
+      --bg-base: #070709;
+      --bg-surface: rgba(18, 18, 22, 0.55);
+      --bg-surface-opaque: #121216;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1aa;
+      --text-muted: #6e6e73;
+      
+      /* Track Accents - Default to Blue */
+      --track-accent: #0071e3;
+      --track-accent-glow: rgba(0, 113, 227, 0.3);
+      
+      /* Colors */
+      --color-blue: #0071e3;
+      --color-red: #ff453a;
+      --color-orange: #ff9f0a;
+      --color-green: #30d158;
+      
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Ambient Background Glow */
+    .bg-glow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(160px);
+      opacity: 0.15;
+      transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 8s ease-in-out;
+      will-change: background-color, transform;
+    }
+
+    .glow-1 {
+      top: -100px;
+      left: -100px;
+      background-color: var(--track-accent);
+      animation: float-slow 20s infinite alternate;
+    }
+
+    .glow-2 {
+      bottom: -150px;
+      right: -100px;
+      background-color: var(--track-accent);
+      opacity: 0.08;
+      animation: float-slow-reverse 25s infinite alternate;
+    }
+
+    @keyframes float-slow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(80px, 50px) scale(1.1); }
+    }
+
+    @keyframes float-slow-reverse {
+      0% { transform: translate(0, 0) scale(1.1); }
+      100% { transform: translate(-60px, -40px) scale(0.9); }
+    }
+
+    /* Grid Overlay background */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* Glassmorphism Utility */
+    .glass {
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Outer Dashboard Layout */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: minmax(320px, 28%) 1fr;
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       LEFT SIDEBAR (30%)
+       ========================================================================== */
+    .sidebar {
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      background: rgba(10, 10, 12, 0.7);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      z-index: 10;
+    }
+
+    .sidebar-header {
+      margin-bottom: 36px;
+    }
+
+    .gov-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .gov-badge span {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--color-green);
+      animation: pulse-live 2s infinite;
+    }
+
+    @keyframes pulse-live {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .sidebar-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.15;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Stacked Cards Container */
+    .tracks-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex-grow: 1;
+    }
+
+    /* Individual Card Style */
+    .track-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      text-align: left;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .track-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .track-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .track-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Card Elements */
+    .track-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .track-number {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+
+    .track-icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .track-card h2 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
+    }
+
+    .track-card p.track-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.3s ease;
+    }
+
+    /* Active Track States */
+    .track-card.active {
+      background: rgba(255, 255, 255, 0.03);
+      cursor: default;
+    }
+
+    /* Accents Specifics (when active) */
+    .track-card[data-track="track-1"].active {
+      border: 1px solid rgba(0, 113, 227, 0.45);
+      box-shadow: 0 0 20px rgba(0, 113, 227, 0.2);
+    }
+    .track-card[data-track="track-1"].active .track-icon-wrapper {
+      background: rgba(0, 113, 227, 0.15);
+      border-color: rgba(0, 113, 227, 0.3);
+      color: var(--color-blue);
+    }
+    .track-card[data-track="track-1"].active h2, 
+    .track-card[data-track="track-1"].active .track-number {
+      color: var(--color-blue);
+    }
+    .track-card[data-track="track-1"].active p.track-desc {
+      color: var(--text-primary);
+    }
+
+    .track-card[data-track="track-2"].active {
+      border: 1px solid rgba(255, 69, 58, 0.45);
+      box-shadow: 0 0 20px rgba(255, 69, 58, 0.2);
+    }
+    .track-card[data-track="track-2"].active .track-icon-wrapper {
+      background: rgba(255, 69, 58, 0.15);
+      border-color: rgba(255, 69, 58, 0.3);
+      color: var(--color-red);
+    }
+    .track-card[data-track="track-2"].active h2, 
+    .track-card[data-track="track-2"].active .track-number {
+      color: var(--color-red);
+    }
+    .track-card[data-track="track-2"].active p.track-desc {
+      color: var(--text-primary);
+    }
+
+    .track-card[data-track="track-3"].active {
+      border: 1px solid rgba(255, 159, 10, 0.45);
+      box-shadow: 0 0 20px rgba(255, 159, 10, 0.2);
+    }
+    .track-card[data-track="track-3"].active .track-icon-wrapper {
+      background: rgba(255, 159, 10, 0.15);
+      border-color: rgba(255, 159, 10, 0.3);
+      color: var(--color-orange);
+    }
+    .track-card[data-track="track-3"].active h2, 
+    .track-card[data-track="track-3"].active .track-number {
+      color: var(--color-orange);
+    }
+    .track-card[data-track="track-3"].active p.track-desc {
+      color: var(--text-primary);
+    }
+
+    .track-card[data-track="track-4"].active {
+      border: 1px solid rgba(48, 209, 88, 0.45);
+      box-shadow: 0 0 20px rgba(48, 209, 88, 0.2);
+    }
+    .track-card[data-track="track-4"].active .track-icon-wrapper {
+      background: rgba(48, 209, 88, 0.15);
+      border-color: rgba(48, 209, 88, 0.3);
+      color: var(--color-green);
+    }
+    .track-card[data-track="track-4"].active h2, 
+    .track-card[data-track="track-4"].active .track-number {
+      color: var(--color-green);
+    }
+    .track-card[data-track="track-4"].active p.track-desc {
+      color: var(--text-primary);
+    }
+
+    .sidebar-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    .sidebar-footer p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Mobile Top Nav (Hidden on Desktop) */
+    .mobile-nav-container {
+      display: none;
+    }
+
+
+    /* ==========================================================================
+       RIGHT CONTENT PANEL (70%)
+       ========================================================================== */
+    .content-panel {
+      padding: 40px 48px;
+      overflow-y: auto;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Content Fade-in / Transition States */
+    .content-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .content-wrapper.fade-out {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    /* Heading Info section */
+    .content-header {
+      margin-bottom: 40px;
+    }
+
+    .content-header .track-badge {
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--track-accent);
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .content-header h2.project-title {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff 40%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .content-header p.project-subtitle {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Section Cards Grid Layout */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-card {
+      border-radius: 20px;
+      padding: 28px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-title-row .icon-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--track-accent-glow);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--track-accent);
+    }
+
+    .card-title-row h3 {
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+    }
+
+    .section-card p.card-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+
+    /* AI Solution Architecture Diagram */
+    .architecture-container {
+      margin-bottom: 24px;
+    }
+
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+
+    .flow-node {
+      flex: 0 0 160px;
+      text-align: center;
+      padding: 16px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .flow-node:hover {
+      border-color: var(--track-accent);
+      box-shadow: 0 0 15px var(--track-accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .flow-node .node-index {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .flow-node h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .flow-node p {
+      font-size: 10px;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    /* Animated Connectors */
+    .flow-connector {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--border-color) 0%, var(--track-accent) 50%, var(--border-color) 100%);
+      position: relative;
+      min-width: 30px;
+    }
+
+    .flow-connector::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--track-accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--track-accent);
+      animation: pulse-arrow 2s infinite linear;
+    }
+
+    @keyframes pulse-arrow {
+      0% { left: 0%; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { left: 100%; opacity: 0; }
+    }
+
+
+    /* Features Section */
+    .features-container {
+      margin-bottom: 24px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--track-accent);
+    }
+
+    .feature-text h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .feature-text p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+
+    /* Tech Stack Chips Section */
+    .tech-stack-container {
+      margin-bottom: 24px;
+    }
+
+    .tech-stack-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .tech-group {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .tech-group:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .tech-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .tech-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .chip:hover {
+      background: var(--track-accent-glow);
+      border-color: var(--track-accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+
+    /* AI Models Section */
+    .models-container {
+      margin-bottom: 24px;
+    }
+
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .model-card {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+
+    .model-card:hover {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .model-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .model-info p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar-container {
+      margin-top: auto;
+    }
+
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%; /* Animated on load via JS */
+      background: linear-gradient(90deg, var(--track-accent), var(--track-accent-glow));
+      border-radius: 100px;
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+
+    /* System Workflow Timeline (Vertical Timeline) */
+    .timeline-container {
+      margin-bottom: 40px;
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 24px;
+      padding-left: 20px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 6px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--track-accent) 0%, rgba(255,255,255,0.04) 100%);
+    }
+
+    .timeline-step {
+      position: relative;
+      padding-bottom: 28px;
+    }
+
+    .timeline-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-node {
+      position: absolute;
+      left: -20px;
+      top: 6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bg-base);
+      border: 3px solid var(--track-accent);
+      box-shadow: 0 0 10px var(--track-accent-glow);
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-step:hover .timeline-node {
+      transform: scale(1.3);
+      box-shadow: 0 0 15px var(--track-accent);
+    }
+
+    .timeline-content {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-content:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.08);
+      transform: translateX(3px);
+    }
+
+    .timeline-meta {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--track-accent);
+      margin-bottom: 4px;
+    }
+
+    .timeline-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .timeline-content p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+
+    /* ==========================================================================
+       RESPONSIVE DESIGN BREAKPOINTS
+       ========================================================================== */
+
+    /* TABLET BREAKPOINT (max-width: 1024px) */
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 24px;
+        height: auto;
+        position: sticky;
+        top: 0;
+        background: rgba(10, 10, 12, 0.85);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+      }
+
+      .sidebar-header {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-header div.title-box {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .gov-badge {
+        margin-bottom: 0;
+        align-self: flex-start;
+      }
+
+      .tracks-stack {
+        flex-direction: row;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .track-card {
+        flex: 0 0 240px;
+        padding: 16px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .content-panel {
+        padding: 32px;
+        height: auto;
+        overflow-y: visible;
+      }
+
+      .grid-2col {
+        gap: 20px;
+      }
+      
+      .models-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* MOBILE BREAKPOINT (max-width: 768px) */
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+
+      .sidebar {
+        padding: 16px;
+        background: rgba(10, 10, 12, 0.9);
+      }
+
+      .sidebar-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      /* Horizontal Scrollable/Swipeable bar on Mobile */
+      .tracks-stack {
+        display: flex;
+        flex-direction: row;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        gap: 10px;
+        padding: 4px 0;
+        scrollbar-width: none; /* Hide scrollbar for Firefox */
+      }
+
+      .tracks-stack::-webkit-scrollbar {
+        display: none; /* Hide scrollbar for Chrome/Safari */
+      }
+
+      .track-card {
+        flex: 0 0 82%;
+        scroll-snap-align: start;
+        padding: 14px;
+      }
+
+      .content-panel {
+        padding: 24px 16px;
+      }
+
+      .content-header h2.project-title {
+        font-size: 28px;
+      }
+
+      .content-header p.project-subtitle {
+        font-size: 15px;
+      }
+
+      .grid-2col {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .models-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .flow-diagram {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .flow-node {
+        flex: 1 0 auto;
+        padding: 12px;
+      }
+
+      /* Adjust arrows to point downward in vertical layout */
+      .flow-connector {
+        width: 2px;
+        height: 24px;
+        min-width: 0;
+        margin: 0 auto;
+        background: linear-gradient(180deg, var(--border-color) 0%, var(--track-accent) 50%, var(--border-color) 100%);
+      }
+
+      .flow-connector::after {
+        top: 0;
+        left: -3px;
+        animation: pulse-arrow-vertical 2s infinite linear;
+      }
+
+      @keyframes pulse-arrow-vertical {
+        0% { top: 0%; opacity: 0; }
+        15% { opacity: 1; }
+        85% { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Background Glow -->
+  <div class="bg-glow-container">
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+  </div>
+
+  <!-- Background grid overlay -->
+  <div class="bg-grid"></div>
+
+  <!-- Dashboard Main Layout -->
+  <div class="dashboard-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="title-box">
+          <div class="gov-badge">
+            <span></span>
+            National AI Portal
+          </div>
+          <h1>AI Hackathon</h1>
+          <p>National Project Showcase</p>
+        </div>
+      </div>
+      
+      <!-- Interactive Cards Stack -->
+      <nav class="tracks-stack" id="tracks-stack">
+        <!-- Dynamically Rendered via JS -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Ministry of Electronics & IT</p>
+        <p style="opacity: 0.5; margin-top: 4px;">&copy; 2026 Initiative of India</p>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT PANEL -->
+    <main class="content-panel" id="content-panel">
+      <div class="content-wrapper" id="content-wrapper">
+        <!-- Dynamically Updated via JS -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Core JavaScript & Data -->
+  <script>
+    // Project Database
+    const TRACKS = {
+      "track-1": {
+        number: "Track 01",
+        title: "VoxPopuli AI",
+        subtitle: "Real-time Public Grievance Routing & Sentiment Mapping",
+        accent: "blue",
+        accentColor: "#0071e3",
+        accentColorGlow: "rgba(0, 113, 227, 0.2)",
+        icon: "message-square-more",
+        problem: "Millions of citizen complaints are filed daily across municipal bodies, but routing them to the correct local department takes weeks, leading to massive backlogs and public frustration.",
+        challenge: "Parsing highly unstructured multilingual text or voice inputs from citizens, filtering background noise, and classifying complex municipal problems accurately without human intervention.",
+        architecture: [
+          { step: "Citizen Core", sub: "Grievance Portal" },
+          { step: "Multilingual Ingest", sub: "Audio / Text / Image API" },
+          { step: "AI Core Router", sub: "Fine-tuned Llama Routing" },
+          { step: "Prediction Engine", sub: "Severity Classification" },
+          { step: "Gov Dashboard", sub: "Smart Dispatch Queue" }
+        ],
+        features: [
+          { icon: "mic", title: "Multilingual Voice API", desc: "Allows voice recording in 22 local languages, transcribing dialects smoothly with local accent mappings." },
+          { icon: "git-merge", title: "Department Routing Engine", desc: "Automatically categorizes tickets into 80+ structural departments with a confidence threshold." },
+          { icon: "alert-octagon", title: "Urgency Prioritization", desc: "Extracts severity signals (e.g. fire hazard, health emergency) to rank tickets for immediate dispatch." },
+          { icon: "map-pin", title: "Spatio-temporal Grouping", desc: "Geolocates tickets onto a centralized map to flag systemic micro-infrastructure failures." }
+        ],
+        techStack: {
+          "Frontend": ["Vanilla HTML5 & CSS3", "Lucide SVG Icons", "Canvas Charts"],
+          "Backend": ["Node.js", "Fastify Engine", "WebSocket Streams"],
+          "AI": ["Llama-3.1 70B fine-tuned", "Whisper-v3 API", "Sentence-Transformers"],
+          "Database": ["PostgreSQL", "pgvector extension"],
+          "Cloud": ["AWS Lambda", "AWS ECS Container Host"],
+          "GIS": ["Leaflet JS Mapper", "GeoJSON Overlays"],
+          "Deployment": ["Vercel Edge Host", "Docker Containers"]
+        },
+        models: [
+          { name: "Whisper-v3 Multilingual", accuracy: 93, task: "Voice transcription & dialect normalization" },
+          { name: "Llama-3.1 70B (GovLoR)", accuracy: 95, task: "Contextual ticket sorting & priority grading" },
+          { name: "SentenceTransformers-BERT", accuracy: 89, task: "Duplicate ticket clustering & similarity analysis" }
+        ],
+        workflow: [
+          { phase: "Phase 1: Ingestion", title: "Omnichannel Intake", desc: "Citizen reports local issues using speech, SMS, web interfaces, or attached geotagged photos." },
+          { phase: "Phase 2: NLP Analysis", title: "Translation & Feature Extraction", desc: "Transcription runs locally; location coordinates and text keywords are extracted using NER." },
+          { phase: "Phase 3: Deep Routing", title: "Classification & Vector Matching", desc: "Semantic comparison checks historical archives; LLM assigns target public engineer." },
+          { phase: "Phase 4: Action", title: "Automated Ticket Dispatch", desc: "Triggers WhatsApp alert to citizen and logs a high-priority ticket on the civil worker dashboard." }
+        ]
+      },
+      "track-2": {
+        number: "Track 02",
+        title: "AeroSense & PathFinder",
+        subtitle: "Micro-climate Monitoring & Road Pothole Detection Network",
+        accent: "red",
+        accentColor: "#ff453a",
+        accentColorGlow: "rgba(255, 69, 58, 0.2)",
+        icon: "wind",
+        problem: "Urban air pollution spikes and deteriorating road conditions damage health, damage vehicles, and increase road hazards, costing municipal committees millions in maintenance.",
+        challenge: "Ingesting real-time air quality metrics and low-cost public transit dashcam feeds to generate actionable road quality indices under diverse lighting and weather.",
+        architecture: [
+          { step: "Transit Fleet", sub: "Public Buses & Cabs" },
+          { step: "Edge Cameras", sub: "Real-time Video Streams" },
+          { step: "YOLOv8 Edge Core", sub: "Pothole & Defect Scan" },
+          { step: "Central Mapper", sub: "Spatio-Temporal Model" },
+          { step: "Repair Hub", sub: "Work Dispatch System" }
+        ],
+        features: [
+          { icon: "video", title: "Edge Video Recognition", desc: "Runs light object-detection algorithms on local dashcam devices to spot road cracks in real-time." },
+          { icon: "activity", title: "Micro-climate Grids", desc: "Aggregates environmental sensor readings (PM2.5, PM10, CO2) from streetlights." },
+          { icon: "arrow-up-right", title: "Severe Pothole Indexing", desc: "Ranks defects by estimated physical area and depth, focusing repairs on high-traffic areas." },
+          { icon: "bell", title: "Civic Health Alerts", desc: "Pushes real-time warnings to local community centers when pollution values exceed dangerous levels." }
+        ],
+        techStack: {
+          "Frontend": ["WebGL Charts", "CSS Grid Layouts", "Canvas Context"],
+          "Backend": ["Python FastAPI", "WebSockets Data Pump"],
+          "AI": ["YOLOv8 Object Detection", "PyTorch Core", "TensorFlow Lite"],
+          "Database": ["InfluxDB (Time Series)", "MongoDB Document Store"],
+          "Cloud": ["Google Cloud Run Serverless", "Firebase Messages"],
+          "GIS": ["Mapbox GL JS Map Container", "Turf.js Library"],
+          "Deployment": ["Kubernetes (GKE)", "Edge BalenaOS Containers"]
+        },
+        models: [
+          { name: "YOLOv8 Road-Segmenter", accuracy: 89, task: "Pixel-level pothole and crack boundary masks" },
+          { name: "Prophet Time Forecaster", accuracy: 86, task: "Pollution and AQI projection analytics" },
+          { name: "ResNet-50 Classifier", accuracy: 91, task: "Severity categorization (Low, Moderate, Severe)" }
+        ],
+        workflow: [
+          { phase: "Phase 1: Ingestion", title: "Sensors & Video Upload", desc: "Buses stream edge coordinates and telemetry, while street hardware logs air indicators." },
+          { phase: "Phase 2: Edge Inference", title: "Road Defects Extraction", desc: "YOLO segments road defects on-device to minimize cloud upload bandwidth." },
+          { phase: "Phase 3: Aggregation", title: "Heatmap Overlay & Prediction", desc: "Spatio-temporal nodes calculate historical road degradation indices and aggregate AQI data." },
+          { phase: "Phase 4: Action", title: "Dispatched Repair Orders", desc: "Automatically issues municipal work orders to nearest maintenance crews with GPS coordinates." }
+        ]
+      },
+      "track-3": {
+        number: "Track 03",
+        title: "PulseShield AI",
+        subtitle: "Community Health Risk Prediction & Outbreak Alerting",
+        accent: "orange",
+        accentColor: "#ff9f0a",
+        accentColorGlow: "rgba(255, 159, 10, 0.2)",
+        icon: "activity",
+        problem: "Outbreaks of vector-borne and water-borne diseases go unnoticed until local hospitals and clinics are overwhelmed, slowing critical sanitary containment.",
+        challenge: "Extracting risk trends from public pharmacy receipts, clinic symptoms, and localized climate data while preserving patient confidentiality and complying with health protocols.",
+        architecture: [
+          { step: "Pharmacies & Clinics", sub: "Logs & Daily Inventory" },
+          { step: "Privacy Gateway", sub: "Differential Privacy Filter" },
+          { step: "LSTM Trend Engine", sub: "Outbreak Index Forecast" },
+          { step: "Risk Profiler", sub: "Spatiotemporal Analyst" },
+          { step: "Health Agency", sub: "Preventative Dispatch" }
+        ],
+        features: [
+          { icon: "shield", title: "Anonymized Gateways", desc: "Utilizes Differential Privacy to strip patient metadata and inject noise at sources." },
+          { icon: "trending-up", title: "Anomaly Trend Engines", desc: "Monitors sudden surges in specific drug classes (e.g. fever reducers, antibiotics) locally." },
+          { icon: "thermometer", title: "Climate Breeding Models", desc: "Integrates environmental telemetry with spatial heatmaps to forecast vector multiplication risks." },
+          { icon: "smartphone", title: "Community SMS Alerts", desc: "Alerts nearby primary healthcare centers with preventative protocols and medical stocks." }
+        ],
+        techStack: {
+          "Frontend": ["CSS custom variables", "Flexbox Grids", "Chart.js Visualizer"],
+          "Backend": ["Go (Golang)", "Gin Gonic Framework"],
+          "AI": ["PyTorch LSTM Nodes", "Scikit-Learn Random Forests", "Diffprivlib Core"],
+          "Database": ["PostgreSQL Relational DB", "Redis Cache Layers"],
+          "Cloud": ["Azure Functions Serverless", "Azure Event Hub Core"],
+          "GIS": ["Turf JS Toolkit", "Leaflet Geographic Overlays"],
+          "Deployment": ["Azure Kubernetes (AKS)", "Helm Deploy Charts"]
+        },
+        models: [
+          { name: "Bi-directional LSTM", accuracy: 91, task: "Time-series anomaly detection in local pharmacy logs" },
+          { name: "Random Forest Regressor", accuracy: 87, task: "Spatiotemporal outbreak probability modeling" },
+          { name: "DiffPriv-Gaussian Noise", accuracy: 97, task: "Differential privacy noise injection and masking" }
+        ],
+        workflow: [
+          { phase: "Phase 1: Ingestion", title: "Symptom & Sales Tracking", desc: "Clinics post daily diagnostic volumes; pharmacies check stock levels for respiratory/fever medicines." },
+          { phase: "Phase 2: Privacy Anonymization", title: "Demographic Scrubbing", desc: "Central server strips identifiers and injects Gaussian noise to protect patient identities." },
+          { phase: "Phase 3: Anomaly Detection", title: "LSTM Trend Processing", desc: "Recurrent networks detect when volumes exceed a 3-standard-deviation threshold." },
+          { phase: "Phase 4: Action", title: "Preemptive Sanitation Alert", desc: "Pinpoints high-risk municipal blocks to trigger drainage cleanings and vector spray campaigns." }
+        ]
+      },
+      "track-4": {
+        number: "Track 04",
+        title: "Krishi-Drishti",
+        subtitle: "AI Crop Health Analysis & Yield Insurance Verification",
+        accent: "green",
+        accentColor: "#30d158",
+        accentColorGlow: "rgba(48, 209, 88, 0.2)",
+        icon: "sprout",
+        problem: "Smallholder farmers face rapid crop failures from pests and unpredictable weather, while manual insurance claim verification takes months, causing severe financial distress.",
+        challenge: "Combining high-resolution multispectral satellite images with variable smartphone camera shots taken by farmers to verify real crop damage accurately.",
+        architecture: [
+          { step: "Farmer App", sub: "Upload Field Photos" },
+          { step: "Sentinel-2 Data", sub: "Multispectral Feeds" },
+          { step: "Vision Transformer", sub: "SAM Crop Masking" },
+          { step: "Damage Regressor", sub: "Loss Ratio Calculator" },
+          { step: "Web3 Escrow", sub: "Instant Insurance Settlement" }
+        ],
+        features: [
+          { icon: "satellite", title: "Satellite NDVI Tracker", desc: "Analyzes Sentinel-2 satellite data streams to assess crop canopy vitality." },
+          { icon: "eye", title: "Foliage Disease Diagnostics", desc: "Detects leaf diseases, fungus, or pest infestation from smartphone photos in under 5 seconds." },
+          { icon: "percentage", title: "Foliar Damage Estimator", desc: "Utilizes segmentation algorithms to calculate damaged crop surface area ratio." },
+          { icon: "shield-alert", title: "Smart-Contract Payouts", desc: "Uses blockchain smart contracts linked to crop indices to process instant farmer compensation." }
+        ],
+        techStack: {
+          "Frontend": ["HTML5 Camera Interface", "Tailored Responsive CSS Grid"],
+          "Backend": ["Python FastAPI", "Celery Task Queue Engine"],
+          "AI": ["Vision Transformer (ViT)", "Segment Anything (SAM)", "ResNet-101 Classifier"],
+          "Database": ["Supabase PostgreSQL Space", "Supabase Storage Bucket"],
+          "Cloud": ["AWS SageMaker Engine", "AWS S3 Storage Host"],
+          "GIS": ["Google Earth Engine API", "GeoPandas Data Library"],
+          "Deployment": ["AWS Fargate Serverless", "GitHub Actions Integration"]
+        },
+        models: [
+          { name: "Vision Transformer (ViT-H)", accuracy: 94, task: "Fine-grained crop pest & disease classification" },
+          { name: "Segment Anything (SAM)", accuracy: 92, task: "Crop damage boundary masking and leaf segmentation" },
+          { name: "ResNet Crop Regressor", accuracy: 88, task: "Vegetation index modeling and yield prediction" }
+        ],
+        workflow: [
+          { phase: "Phase 1: Ingestion", title: "Photo & Geotag Upload", desc: "Farmer takes photo of damage in the fields; app records GPS coordinates and bearing." },
+          { phase: "Phase 2: Verification", title: "Satellite Cross-Referencing", desc: "Downloads local Sentinel-2 coordinates to verify historical vegetation index drops." },
+          { phase: "Phase 3: Diagnostics", title: "SAM Visual Segmentation", desc: "Isolates pest patches and healthy crop margins to calculate total damage percentage." },
+          { phase: "Phase 4: Action", title: "Automated Insurance Verification", desc: "Triggers instant insurance payout to the verified farmer's digital bank account." }
+        ]
+      }
+    };
+
+    let activeTrackId = "track-1";
+
+    // Initialize UI on Load
+    window.addEventListener("DOMContentLoaded", () => {
+      renderSidebarCards();
+      selectTrack(activeTrackId);
+    });
+
+    // Render Left Stack Cards
+    function renderSidebarCards() {
+      const stack = document.getElementById("tracks-stack");
+      stack.innerHTML = "";
+
+      Object.entries(TRACKS).forEach(([id, track]) => {
+        const card = document.createElement("button");
+        card.className = "track-card";
+        card.setAttribute("data-track", id);
+        card.onclick = () => selectTrack(id);
+
+        card.innerHTML = `
+          <div class="track-card-header">
+            <span class="track-number">${track.number}</span>
+            <div class="track-icon-wrapper">
+              <i data-lucide="${track.icon}"></i>
+            </div>
+          </div>
+          <h2>${track.title}</h2>
+          <p class="track-desc">${track.subtitle}</p>
+        `;
+        stack.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // Handle Track Selection
+    function selectTrack(trackId) {
+      if (trackId === activeTrackId && document.getElementById("content-wrapper").children.length > 0) return;
+
+      // Update sidebar active classes
+      document.querySelectorAll(".track-card").forEach(card => {
+        if (card.getAttribute("data-track") === trackId) {
+          card.classList.add("active");
+        } else {
+          card.classList.remove("active");
+        }
+      });
+
+      const wrapper = document.getElementById("content-wrapper");
+      
+      // Phase 1: Fade out current content
+      wrapper.classList.add("fade-out");
+
+      // Update the active tracker ID
+      activeTrackId = trackId;
+      const track = TRACKS[trackId];
+
+      // Update Global CSS variables to match active accent
+      document.documentElement.style.setProperty('--track-accent', track.accentColor);
+      document.documentElement.style.setProperty('--track-accent-glow', track.accentColorGlow);
+
+      // Phase 2: Wait for fade-out, then update DOM
+      setTimeout(() => {
+        wrapper.innerHTML = renderRightPanelHTML(track);
+        lucide.createIcons();
+
+        // Phase 3: Trigger fade-in
+        wrapper.classList.remove("fade-out");
+
+        // Phase 4: Animate AI Models accuracy bars sequentially
+        setTimeout(() => {
+          document.querySelectorAll(".progress-fill").forEach(bar => {
+            const val = bar.getAttribute("data-val");
+            bar.style.width = val + "%";
+          });
+        }, 100);
+
+      }, 200);
+    }
+
+    // HTML Template Builder for Right Panel Content
+    function renderRightPanelHTML(track) {
+      // 1. Architecture Nodes
+      let architectureHTML = "";
+      track.architecture.forEach((node, idx) => {
+        architectureHTML += `
+          <div class="flow-node">
+            <div class="node-index">Step 0${idx + 1}</div>
+            <h4>${node.step}</h4>
+            <p>${node.sub}</p>
+          </div>
+        `;
+        if (idx < track.architecture.length - 1) {
+          architectureHTML += `<div class="flow-connector"></div>`;
+        }
+      });
+
+      // 2. Features Grid
+      let featuresHTML = "";
+      track.features.forEach(feat => {
+        featuresHTML += `
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i data-lucide="${feat.icon}"></i>
+            </div>
+            <div class="feature-text">
+              <h4>${feat.title}</h4>
+              <p>${feat.desc}</p>
+            </div>
+          </div>
+        `;
+      });
+
+      // 3. Tech Stack Groupings
+      let techHTML = "";
+      Object.entries(track.techStack).forEach(([groupName, chips]) => {
+        let chipsHTML = "";
+        chips.forEach(chip => {
+          chipsHTML += `<span class="chip">${chip}</span>`;
+        });
+        
+        techHTML += `
+          <div class="tech-group">
+            <div class="tech-label">${groupName}</div>
+            <div class="tech-chips">${chipsHTML}</div>
+          </div>
+        `;
+      });
+
+      // 4. AI Models Grid
+      let modelsHTML = "";
+      track.models.forEach(model => {
+        modelsHTML += `
+          <div class="model-card">
+            <div class="model-info">
+              <h4>${model.name}</h4>
+              <p>${model.task}</p>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-label-row">
+                <span>Accuracy</span>
+                <span>${model.accuracy}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" data-val="${model.accuracy}"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      // 5. System Workflow Timeline
+      let workflowHTML = "";
+      track.workflow.forEach((step, idx) => {
+        workflowHTML += `
+          <div class="timeline-step">
+            <div class="timeline-node"></div>
+            <div class="timeline-content">
+              <div class="timeline-meta">${step.phase}</div>
+              <h4>${step.title}</h4>
+              <p>${step.desc}</p>
+            </div>
+          </div>
+        `;
+      });
+
+      // Return fully concatenated panel HTML
+      return `
+        <!-- Title and Subtitle -->
+        <header class="content-header">
+          <span class="track-badge">${track.number} Showcase</span>
+          <h2 class="project-title">${track.title}</h2>
+          <p class="project-subtitle">${track.subtitle}</p>
+        </header>
+
+        <!-- Problem and Challenge Cards -->
+        <div class="grid-2col">
+          <div class="section-card glass">
+            <div class="card-title-row">
+              <div class="icon-box"><i data-lucide="help-circle"></i></div>
+              <h3>Problem Statement</h3>
+            </div>
+            <p class="card-body">${track.problem}</p>
+          </div>
+          
+          <div class="section-card glass">
+            <div class="card-title-row">
+              <div class="icon-box"><i data-lucide="zap"></i></div>
+              <h3>The Challenge</h3>
+            </div>
+            <p class="card-body">${track.challenge}</p>
+          </div>
+        </div>
+
+        <!-- Architecture Flow -->
+        <div class="section-card glass architecture-container">
+          <div class="card-title-row">
+            <div class="icon-box"><i data-lucide="network"></i></div>
+            <h3>AI Solution Architecture</h3>
+          </div>
+          <div class="flow-diagram">
+            ${architectureHTML}
+          </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="section-card glass features-container">
+          <div class="card-title-row">
+            <div class="icon-box"><i data-lucide="layers"></i></div>
+            <h3>Core Features & Capabilities</h3>
+          </div>
+          <div class="features-grid">
+            ${featuresHTML}
+          </div>
+        </div>
+
+        <!-- AI Models Grid -->
+        <div class="section-card glass models-container">
+          <div class="card-title-row">
+            <div class="icon-box"><i data-lucide="cpu"></i></div>
+            <h3>Core AI Models</h3>
+          </div>
+          <div class="models-grid">
+            ${modelsHTML}
+          </div>
+        </div>
+
+        <!-- Technology Stack Groups -->
+        <div class="section-card glass tech-stack-container">
+          <div class="card-title-row">
+            <div class="icon-box"><i data-lucide="code-2"></i></div>
+            <h3>Technology Stack</h3>
+          </div>
+          <div class="tech-stack-groups">
+            ${techHTML}
+          </div>
+        </div>
+
+        <!-- System Workflow Timeline -->
+        <div class="section-card glass timeline-container">
+          <div class="card-title-row">
+            <div class="icon-box"><i data-lucide="calendar"></i></div>
+            <h3>System Workflow & Data Lifecycle</h3>
+          </div>
+          <div class="timeline">
+            ${workflowHTML}
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
